@@ -4,7 +4,7 @@ Declarative infrastructure for my personal homelab. Johto combines NixOS,
 k3s, Flux, SOPS, and OpenTofu to manage the hosts, applications, networking,
 DNS, and backups that keep the lab running.
 
-If you're looking for my production services, see [sinnoh](https://github.com/alyraffauf/sinnoh).
+If you're looking for my production services, see [sinnoh](https://github.com/devon-systems/sinnoh).
 For my personal nix flake, check out [hoenn](https://github.com/alyraffauf/hoenn).
 
 ## Architecture

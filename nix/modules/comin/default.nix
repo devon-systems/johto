@@ -8,7 +8,7 @@
       remotes = [
         {
           name = "origin";
-          url = "https://github.com/alyraffauf/johto.git";
+          url = "https://github.com/devon-systems/johto.git";
           branches.main.name = "master";
           poller.period = 600;
         }
