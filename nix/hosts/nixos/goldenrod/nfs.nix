@@ -1,15 +1,10 @@
 _: {
   flake.nixosModules.goldenrod = {
-    networking.firewall.extraInputRules = ''
-      -s 10.42.0.0/16 -p tcp --dport 2049 -j ACCEPT
-      -s 10.42.0.0/16 -p udp --dport 2049 -j ACCEPT
-    '';
-
     services.nfs.server = {
       enable = true;
       exports = ''
-        /mnt/Data 127.0.0.1(rw,sync,no_subtree_check,no_root_squash,fsid=0) 100.64.0.0/10(rw,sync,no_subtree_check,no_root_squash,fsid=0) 10.42.0.0/16(rw,sync,no_subtree_check,no_root_squash,fsid=0) 10.254.2.0/24(rw,sync,no_subtree_check,no_root_squash,fsid=0)
-        /mnt/Media 127.0.0.1(rw,sync,no_subtree_check,no_root_squash,fsid=1) 100.64.0.0/10(rw,sync,no_subtree_check,no_root_squash,fsid=1) 10.42.0.0/16(rw,sync,no_subtree_check,no_root_squash,fsid=1) 10.254.2.0/24(rw,sync,no_subtree_check,no_root_squash,fsid=1)
+        /mnt/Data 127.0.0.1(rw,sync,no_subtree_check,no_root_squash,fsid=0) 100.64.0.0/10(rw,sync,no_subtree_check,no_root_squash,fsid=0) 10.254.2.0/24(rw,sync,no_subtree_check,no_root_squash,fsid=0)
+        /mnt/Media 127.0.0.1(rw,sync,no_subtree_check,no_root_squash,fsid=1) 100.64.0.0/10(rw,sync,no_subtree_check,no_root_squash,fsid=1) 10.254.2.0/24(rw,sync,no_subtree_check,no_root_squash,fsid=1)
       '';
     };
   };
