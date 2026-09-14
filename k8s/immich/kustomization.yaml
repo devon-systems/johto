@@ -3,4 +3,5 @@ kind: Kustomization
 resources:
   - immich.yaml
   - postgres.yaml
+  - postgres-network-policy.yaml
   - valkey-network-policy.yaml

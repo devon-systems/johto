@@ -1,0 +1,80 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: pg-shared
+  namespace: cnpg-system
+spec:
+  podSelector:
+    matchLabels:
+      cnpg.io/cluster: pg-shared
+  # Preserve outbound API, DNS, and backup traffic.
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: happyview
+          podSelector:
+            matchLabels:
+              app: happyview
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: identity
+          podSelector:
+            matchLabels:
+              app: pocket-id
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: nextcloud
+          podSelector:
+            matchLabels:
+              app: nextcloud
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ombi
+          podSelector:
+            matchLabels:
+              app: ombi
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: paperless
+          podSelector:
+            matchLabels:
+              app: paperless
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: pinepods
+          podSelector:
+            matchLabels:
+              app: pinepods
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: arr
+          podSelector:
+            matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                  - bazarr
+                  - lidarr
+                  - prowlarr
+                  - radarr
+                  - sonarr
+      ports:
+        - protocol: TCP
+          port: 5432
+    # The operator and database peers also use the instance manager.
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: cloudnative-pg
+              app.kubernetes.io/instance: cloudnative-pg
+        - podSelector:
+            matchLabels:
+              cnpg.io/cluster: pg-shared
+      ports:
+        - protocol: TCP
+          port: 5432
+        - protocol: TCP
+          port: 8000
