@@ -92,7 +92,8 @@ Never commit decrypted values or OpenTofu state.
 
 ```bash
 just sops-bootstrap             # Install this machine's age key once
-just sops-edit tailscale.yaml   # Edit an encrypted secret
+just sops-edit tailscale.yaml   # Edit an encrypted host secret
+just sops-edit k8s/secrets/pocket-id-env.sops.yaml
 just sops-rekey                 # Update recipients after keys/ changes
 ```
 
