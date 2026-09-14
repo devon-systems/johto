@@ -21,11 +21,6 @@ spec:
         seccompProfile:
           type: RuntimeDefault
       containers:
-        - name: valkey
-          image: valkey/valkey:9-alpine@sha256:a0dbf4c1d5708782907c10e2c72deff317518518b5288a58416981d9db95d30b
-          ports:
-            - name: valkey
-              containerPort: 6379
         - name: pinepods
           image: madeofpendletonwool/pinepods:0.9.0@sha256:ebc258bb0c62cdb69e5fb726b247c885dac19b50d06fed68fa8d37197b88ace4
           envFrom:
@@ -77,7 +72,7 @@ spec:
             - name: TZ
               value: America/New_York
             - name: VALKEY_HOST
-              value: 127.0.0.1
+              value: valkey
             - name: VALKEY_PORT
               value: "6379"
           ports:
