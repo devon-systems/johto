@@ -9,5 +9,4 @@ resources:
   - watsup.yaml
   - ombi.yaml
   - pocket-id.yaml
-  - slingshot.yaml
   - happyview.yaml

@@ -8,7 +8,6 @@ locals {
     "kuma.cute.haus"      = true
     "nextcloud.cute.haus" = false
     "paperless.cute.haus" = false
-    "slingshot.cute.haus" = true
   }
 }
 

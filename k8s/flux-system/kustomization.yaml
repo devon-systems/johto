@@ -25,7 +25,6 @@ resources:
   - postgres-backups.yaml
   - private-ingress.yaml
   - secrets.yaml
-  - slingshot.yaml
   - skytrace.yaml
   - tailscale-private-ingress.yaml
   - tailscale.yaml
