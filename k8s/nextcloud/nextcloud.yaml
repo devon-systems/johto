@@ -163,20 +163,22 @@ spec:
           args:
             - |
               config=/var/www/html/config/config.php
-              if grep -Fq "'dbhost' => 'postgres'" "$config"; then
-                sed -i \
-                  -e "s/'dbhost' => 'postgres'/'dbhost' => 'pg-shared-rw.cnpg-system.svc'/" \
-                  -e "s/'host' => 'nextcloud-valkey'/'host' => 'valkey'/" \
-                  "$config"
-              elif ! grep -Fq "'dbhost' => 'pg-shared-rw.cnpg-system.svc'" "$config"; then
-                echo "unexpected Nextcloud database host" >&2
-                exit 1
-              fi
+              if [ -f "$config" ]; then
+                if grep -Fq "'dbhost' => 'postgres'" "$config"; then
+                  sed -i \
+                    -e "s/'dbhost' => 'postgres'/'dbhost' => 'pg-shared-rw.cnpg-system.svc'/" \
+                    -e "s/'host' => 'nextcloud-valkey'/'host' => 'valkey'/" \
+                    "$config"
+                elif ! grep -Fq "'dbhost' => 'pg-shared-rw.cnpg-system.svc'" "$config"; then
+                  echo "unexpected Nextcloud database host" >&2
+                  exit 1
+                fi
 
-              sed -i \
-                -e "s/'hostname' => 'host.docker.internal'/'hostname' => '10.254.2.3'/" \
-                -e "s/'hostname' => '10.254.0.1'/'hostname' => '10.254.2.3'/" \
-                "$config"
+                sed -i \
+                  -e "s/'hostname' => 'host.docker.internal'/'hostname' => '10.254.2.3'/" \
+                  -e "s/'hostname' => '10.254.0.1'/'hostname' => '10.254.2.3'/" \
+                  "$config"
+              fi
               exec /entrypoint.sh apache2-foreground
           envFrom:
             - secretRef:
@@ -220,12 +222,23 @@ spec:
               memory: 4Gi
           startupProbe:
             httpGet: { path: /status.php, port: 80 }
-            failureThreshold: 60
+            failureThreshold: 180
             periodSeconds: 5
           livenessProbe:
             httpGet: { path: /status.php, port: 80 }
           readinessProbe:
-            httpGet: { path: /status.php, port: 80 }
+            exec:
+              command:
+                - php
+                - -r
+                - |
+                  $response = @file_get_contents('http://127.0.0.1/status.php');
+                  $status = json_decode($response === false ? '' : $response, true);
+                  exit(is_array($status)
+                    && ($status['installed'] ?? false) === true
+                    && ($status['maintenance'] ?? true) === false
+                    && ($status['needsDbUpgrade'] ?? true) === false ? 0 : 1);
+            timeoutSeconds: 5
           volumeMounts:
             - name: html
               mountPath: /var/www/html
@@ -258,4 +271,4 @@ spec:
         - name: html
           hostPath:
             path: /mnt/Data/apps/nextcloud/html
-            type: Directory
+            type: DirectoryOrCreate
