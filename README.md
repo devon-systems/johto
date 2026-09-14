@@ -52,6 +52,9 @@ nix fmt
 # Evaluate the flake and run its configured checks.
 nix flake check
 
+# Render Flux targets and validate Kubernetes resources.
+nix run .#check-k8s
+
 # Build a host configuration without activating it.
 nix build .#nixosConfigurations.olivine.config.system.build.toplevel
 nix build .#nixosConfigurations.goldenrod.config.system.build.toplevel
@@ -63,6 +66,12 @@ nix run github:alyraffauf/infra#generate-host-readmes
 # Discover repository maintenance recipes.
 just
 ```
+
+The Kubernetes check requires network access to fetch schemas. It validates
+Flux targets and local Helm releases using their configured values. Encrypted SOPS
+documents and generated CRD definitions are explicitly excluded from schema
+validation. Other resources fail if their schema is missing. Remote Helm
+charts are validated as release declarations, not rendered chart contents.
 
 CI evaluates the flake, builds the development shell, and builds all NixOS
 hosts. Kubernetes changes are deployed through Flux after they reach
