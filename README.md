@@ -1,4 +1,4 @@
-# 🏠 johto
+# johto
 
 Declarative infrastructure for my personal homelab. Johto combines NixOS,
 k3s, Flux, SOPS, and OpenTofu to manage the hosts, applications, networking,
@@ -23,14 +23,14 @@ The cluster runs a mix of personal cloud, media, and operations services,
 including Immich, Nextcloud, Paperless, Pocket ID, Plex, Jellyfin, the Servarr
 stack, CloudNativePG, Prometheus, Loki, and Uptime Kuma.
 
-## Repository Layout
+## Repository layout
 
 ```text
 nix/
 ├── hosts/nixos/       Per-host NixOS configuration and hardware state
-└── nixos/             Shared modules, features, services, and users
+└── modules/           Host defaults and feature modules
 k8s/                  Flux, Kustomize, Helm, and application manifests
-secrets/              SOPS-encrypted host and Kubernetes secrets
+secrets/              SOPS-encrypted host secrets
 keys/                 Public SSH keys used to derive age recipients
 terraform/            OpenTofu configuration for Cloudflare DNS
 scripts/              Repository maintenance utilities
@@ -38,81 +38,44 @@ scripts/              Repository maintenance utilities
 
 `flake.nix` assembles the Nix modules and exposes the `olivine`, `goldenrod`,
 and `cherrygrove` NixOS configurations. Kubernetes applications are grouped by
-service under `k8s/`; `k8s/flux-system/` defines their reconciliation order.
+service under `k8s/`. `k8s/flux-system/` defines their reconciliation order.
 
-## Development
+## Work locally
 
-Enter the pinned toolchain with `nix develop`, or run `direnv allow` to load it
-automatically. Useful commands from the repository root include:
+Enter the pinned development shell with `nix develop`, or use `direnv allow`
+to load it automatically. From the repository root:
 
-```bash
-# Format Nix, YAML, Markdown, TypeScript, and shell files.
+```sh
 nix fmt
-
-# Evaluate the flake and run its configured checks.
 nix flake check
-
-# Render Flux targets and validate Kubernetes resources.
-nix run .#check-k8s
-
-# Build a host configuration without activating it.
-nix build .#nixosConfigurations.olivine.config.system.build.toplevel
-nix build .#nixosConfigurations.goldenrod.config.system.build.toplevel
-nix build .#nixosConfigurations.cherrygrove.config.system.build.toplevel
-
-# Refresh the generated host hardware documentation.
-nix run github:alyraffauf/infra#generate-host-readmes
-
-# Discover repository maintenance recipes.
-just
 ```
 
-The Kubernetes check requires network access to fetch schemas. It validates
-Flux targets and local Helm releases using their configured values. Encrypted SOPS
-documents and generated CRD definitions are explicitly excluded from schema
-validation. Other resources fail if their schema is missing. Remote Helm
-charts are validated as release declarations, not rendered chart contents.
+Run `just` to list maintenance commands. See [AGENTS.md](AGENTS.md) for checks
+specific to your change, generated files, and secret maintenance.
 
-CI evaluates the flake, builds the development shell, and builds all NixOS
-hosts. Kubernetes changes are deployed through Flux after they reach
-`master`; avoid applying repository manifests manually unless recovering the
-cluster.
+## Deployment
 
-## NixOS Deployments
+`blzrd` deploys `olivine` and `goldenrod`. For example:
 
-`nix/deployments.nix` registers both hosts with `blzrd`. From the development
-shell, deploy only the intended host whenever possible:
-
-```bash
-blzrd switch olivine       # Activate Olivine and set its boot default
-blzrd switch goldenrod     # Activate Goldenrod and set its boot default
-blzrd boot olivine         # Set Olivine's next boot without activating it
-blzrd switch               # Deploy both registered hosts
+```sh
+blzrd switch olivine
 ```
 
-Run the checks and build the affected host first. Supplying no node names
-targets every registered node, so reserve the bare command for coordinated
-fleet deployments.
+`switch` activates the configuration and sets the boot default. `boot` sets
+the boot default without activating it. Deployment checks and precautions are
+in [AGENTS.md](AGENTS.md#deploy-deliberately).
 
-## Secrets and DNS
+Flux deploys Kubernetes workloads from `master`. OpenTofu manages DNS.
 
-Secrets are encrypted with SOPS for the recipients declared in `.sops.yaml`.
-Never commit decrypted values or OpenTofu state.
+## Secrets
 
-```bash
-just sops-bootstrap             # Install this machine's age key once
-just sops-edit tailscale.yaml   # Edit an encrypted host secret
-just sops-edit k8s/secrets/pocket-id-env.sops.yaml
-just sops-rekey                 # Update recipients after keys/ changes
+SOPS encrypts secrets for the recipients in `.sops.yaml`. Public keys live in
+`keys/`. To edit a host secret from the development shell:
+
+```sh
+just sops-edit tailscale.yaml
 ```
 
-Direnv decrypts the Cloudflare and Backblaze credentials used by OpenTofu.
-Review DNS changes before applying them:
-
-```bash
-tofu -chdir=terraform init
-tofu -chdir=terraform plan
-tofu -chdir=terraform apply
-```
+Direnv loads the encrypted Cloudflare and Backblaze credentials for OpenTofu.
 
 See [AGENTS.md](AGENTS.md) for contribution and validation guidelines.
