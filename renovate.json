@@ -42,6 +42,13 @@
 
   "packageRules": [
     {
+      "description": "Jellyfin image updates are managed in kustomization.yaml",
+      "matchManagers": ["kubernetes"],
+      "matchFileNames": ["k8s/jellyfin/jellyfin.yaml"],
+      "matchPackageNames": ["jellyfin/jellyfin"],
+      "enabled": false
+    },
+    {
       "description": "OCI Helm charts use chart versions, not container digests",
       "matchManagers": ["flux"],
       "pinDigests": false
