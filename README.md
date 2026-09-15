@@ -50,8 +50,7 @@ nix fmt
 nix flake check
 ```
 
-Run `just` to list maintenance commands. See [AGENTS.md](AGENTS.md) for checks
-specific to your change, generated files, and secret maintenance.
+Run `just` to list maintenance commands.
 
 ## Deployment
 
@@ -62,8 +61,8 @@ blzrd switch olivine
 ```
 
 `switch` activates the configuration and sets the boot default. `boot` sets
-the boot default without activating it. Deployment checks and precautions are
-in [AGENTS.md](AGENTS.md#deploy-deliberately).
+the boot default without activating it. Without a host name, `blzrd switch`
+deploys every registered node.
 
 Flux deploys Kubernetes workloads from `master`. OpenTofu manages DNS.
 
@@ -77,5 +76,3 @@ just sops-edit tailscale.yaml
 ```
 
 Direnv loads the encrypted Cloudflare and Backblaze credentials for OpenTofu.
-
-See [AGENTS.md](AGENTS.md) for contribution and validation guidelines.
