@@ -189,11 +189,11 @@ spec:
               name: metrics
           readinessProbe:
             httpGet:
-              path: /metrics
+              path: /healthz
               port: metrics
           livenessProbe:
             httpGet:
-              path: /metrics
+              path: /healthz
               port: metrics
           resources:
             requests:
