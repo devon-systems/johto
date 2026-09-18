@@ -158,7 +158,7 @@ spec:
         fsGroup: 33
       containers:
         - name: nextcloud
-          image: docker.io/library/nextcloud:34-apache@sha256:6492509bf7619b698c42403ef4f6db984927b6a25c744994d92959e772bfe0b0
+          image: docker.io/library/nextcloud:35-apache@sha256:3e9f6eaa5dc8e26df3a7b78cd564ec14408f52cdc89d607e5b4341b85ab83f0e
           command: [/bin/sh, -ec]
           args:
             - |
@@ -243,7 +243,7 @@ spec:
             - name: html
               mountPath: /var/www/html
         - name: cron
-          image: docker.io/library/nextcloud:34-apache@sha256:6492509bf7619b698c42403ef4f6db984927b6a25c744994d92959e772bfe0b0
+          image: docker.io/library/nextcloud:35-apache@sha256:3e9f6eaa5dc8e26df3a7b78cd564ec14408f52cdc89d607e5b4341b85ab83f0e
           command: [/bin/sh, -ec]
           args:
             [
