@@ -22,7 +22,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: happyview
-          image: ghcr.io/gamesgamesgamesgamesgames/happyview:2.14.2@sha256:1b396e75a22905ca89f94ee0b863ba62478154323edfb73d98e71eb4fc3471f7
+          image: ghcr.io/gamesgamesgamesgamesgames/happyview:2.15.0@sha256:8d67907eec075dad54a2f9f7374b65848788adf84e1de139cfaffc92513ef9db
           envFrom:
             - secretRef:
                 name: happyview-env
