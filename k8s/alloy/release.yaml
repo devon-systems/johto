@@ -172,6 +172,10 @@ spec:
           prometheus.relabel "immich_postgres" {
             forward_to = [prometheus.remote_write.johto.receiver]
             rule {
+              target_label = "job"
+              replacement = "immich-postgres"
+            }
+            rule {
               source_labels = ["__name__"]
               regex = "up|scrape_.*|pg_up|pg_exporter_last_scrape_error|pg_stat_database_.*|pg_database_size_bytes|pg_locks_count"
               action = "keep"
