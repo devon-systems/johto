@@ -126,7 +126,7 @@ spec:
       securityContext: { fsGroup: 1000 }
       containers:
         - name: paperless
-          image: ghcr.io/paperless-ngx/paperless-ngx:latest@sha256:aa810a36942c63d4ee70d00eda7236cd3d6acfb7eb3f7987fb568ed14df8817a
+          image: ghcr.io/paperless-ngx/paperless-ngx:latest@sha256:22dc423ff48ac1629977dbf0c9625ba9f60d3bd1291a2ff173c65351984a14c2
           envFrom: [{ secretRef: { name: paperless-env } }]
           env:
             # The Service is intentionally named `paperless`; explicitly set
