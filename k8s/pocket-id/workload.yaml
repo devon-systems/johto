@@ -21,7 +21,7 @@ spec:
       enableServiceLinks: false
       containers:
         - name: pocket-id
-          image: ghcr.io/pocket-id/pocket-id:v2@sha256:01540977dcf4c7b41b1159f34d68e4632f2658d62790e460ca65a42722b13c4a
+          image: ghcr.io/pocket-id/pocket-id:v2@sha256:ec46886301a3159b2b32334ca1da83539c9e36f8d84bc566dafaf889ac509f2a
           env:
             - name: APP_URL
               value: https://id.cute.haus
