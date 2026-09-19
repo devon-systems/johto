@@ -5,3 +5,4 @@ resources:
   - postgres.yaml
   - postgres-network-policy.yaml
   - valkey-network-policy.yaml
+  - monitor-bootstrap.yaml

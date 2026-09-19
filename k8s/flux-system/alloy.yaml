@@ -4,6 +4,9 @@ metadata:
   name: alloy
   namespace: flux-system
 spec:
+  dependsOn:
+    - name: secrets
+    - name: immich
   interval: 10m
   path: ./k8s/alloy
   prune: true

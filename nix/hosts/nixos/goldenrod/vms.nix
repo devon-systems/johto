@@ -42,10 +42,15 @@ _: {
       vms.cherrygrove = {
         autostart = true;
         config = self.nixosModules.cherrygrove;
-        restartIfChanged = true;
+        # Host monitoring changes must not restart this VM.
+        restartIfChanged = false;
         specialArgs = {inherit self;};
       };
     };
+
+    # Keep the installed VM runner during host-only rollouts. A VM update must
+    # deliberately remove this guard before replacing its current generation.
+    systemd.services.install-microvm-cherrygrove.unitConfig.ConditionPathExists = "!${config.microvm.stateDir}/cherrygrove/current";
 
     networking = {
       firewall.trustedInterfaces = ["cherrygrove"];

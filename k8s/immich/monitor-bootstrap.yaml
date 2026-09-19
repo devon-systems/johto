@@ -1,0 +1,41 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: immich-monitor-bootstrap-v1
+  namespace: immich
+spec:
+  backoffLimit: 6
+  activeDeadlineSeconds: 600
+  template:
+    metadata:
+      labels:
+        app: immich-monitor-bootstrap
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: bootstrap
+          image: ghcr.io/immich-app/postgres:17-vectorchord0.4.3-pgvector0.8.0@sha256:0baf4cde9b54d8d7dc6a6ad8d8c43c3c6b884f82e1c2a023d571414820e39336
+          env:
+            - { name: PGHOST, value: postgres }
+            - { name: PGDATABASE, value: immich }
+            - { name: PGUSER, value: immich }
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef: { name: immich-env, key: DB_PASSWORD }
+            - name: MONITOR_PASSWORD
+              valueFrom:
+                secretKeyRef: { name: immich-monitor, key: password }
+          command: [/bin/sh, -ec]
+          args:
+            - |
+              psql --no-psqlrc --set=ON_ERROR_STOP=1 <<'SQL'
+              \getenv monitor_password MONITOR_PASSWORD
+              SELECT 'CREATE ROLE alloy_monitor LOGIN' WHERE NOT EXISTS
+                (SELECT FROM pg_roles WHERE rolname = 'alloy_monitor') \gexec
+              ALTER ROLE alloy_monitor WITH LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION PASSWORD :'monitor_password';
+              GRANT pg_monitor TO alloy_monitor;
+              GRANT CONNECT ON DATABASE immich TO alloy_monitor;
+              SQL
+          resources:
+            requests: { cpu: 10m, memory: 32Mi }
+            limits: { cpu: 100m, memory: 64Mi }

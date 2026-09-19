@@ -64,11 +64,40 @@ _: {
         backupCleanupCommand = "${pkgs.systemd}/bin/systemctl start garage";
       };
 
-      immich = appBackup {
-        name = "immich";
-        paths = ["/mnt/Data/apps/immich"];
-        pruneOpts = coreRetention;
-      };
+      immich =
+        (appBackup {
+          name = "immich";
+          paths = ["/mnt/Data/apps/immich"];
+          pruneOpts = coreRetention;
+          extraBackupArgs = ["--cleanup-cache" "--compression max" "--no-scan" "--exclude=/mnt/Data/apps/immich/postgres-johto"];
+          backupPrepareCommand = ''
+            set -eu
+            dump=$(${pkgs.findutils}/bin/find /mnt/Data/apps/immich/backups -maxdepth 1 -name 'immich-db-backup-*.sql.gz' -type f -printf '%T@ %p\n' | ${pkgs.coreutils}/bin/sort -nr | ${pkgs.gnused}/bin/sed -n '1s/^[^ ]* //p')
+            test -n "$dump"
+            timestamp=$(${pkgs.coreutils}/bin/stat -c %Y "$dump")
+            age=$(( $(${pkgs.coreutils}/bin/date +%s) - timestamp ))
+            if [ "$age" -lt 0 ] || [ "$age" -gt 21600 ]; then
+              echo "Immich database dump is older than six hours or dated in the future" >&2
+              exit 1
+            fi
+            before=$(${pkgs.coreutils}/bin/stat -c '%i:%s:%Y' "$dump")
+            ${pkgs.gzip}/bin/gzip -t "$dump"
+            test "$before" = "$(${pkgs.coreutils}/bin/stat -c '%i:%s:%Y' "$dump")"
+            (
+            temporary=$(${pkgs.coreutils}/bin/mktemp /var/lib/johto-backup-metrics/immich-dump.XXXXXX)
+            printf 'johto_immich_dump_timestamp_seconds %s\n' "$timestamp" > "$temporary"
+            ${pkgs.coreutils}/bin/chmod 644 "$temporary"
+            ${pkgs.coreutils}/bin/mv "$temporary" /var/lib/johto-backup-metrics/immich-dump.prom
+            ) || true
+          '';
+        })
+        // {
+          timerConfig = {
+            OnCalendar = "*-*-* 03:00:00 America/New_York";
+            Persistent = true;
+            RandomizedDelaySec = 0;
+          };
+        };
 
       k3s-local-path = appBackup {
         name = "k3s-local-path";
