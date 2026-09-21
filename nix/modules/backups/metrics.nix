@@ -6,7 +6,7 @@ _: {
     ...
   }: let
     jobs = builtins.attrNames config.services.restic.backups;
-    directory = "/var/lib/johto-backup-metrics";
+    directory = "/var/lib/johto-metrics";
     reporter = pkgs.writeShellApplication {
       name = "johto-backup-metrics";
       runtimeInputs = [pkgs.coreutils pkgs.util-linux pkgs.gawk pkgs.systemd];
@@ -68,11 +68,6 @@ _: {
       '';
     };
   in {
-    services.prometheus.exporters.node = {
-      enabledCollectors = ["textfile"];
-      extraFlags = ["--collector.textfile.directory=${directory}"];
-    };
-    systemd.tmpfiles.rules = ["d ${directory} 0755 root root -"];
     systemd.services =
       lib.listToAttrs (map (job: {
           name = "restic-backups-${job}";

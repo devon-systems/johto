@@ -9,7 +9,7 @@ _: {
         from pathlib import Path
         import os
         import tempfile
-        directory = Path('/var/lib/johto-backup-metrics')
+        directory = Path('/var/lib/johto-metrics')
         for record in Path('/var/lib/btrfs').glob('scrub.status.*'):
             for line in record.read_text().splitlines():
                 if '|' not in line:
