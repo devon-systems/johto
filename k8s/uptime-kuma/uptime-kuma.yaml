@@ -4,7 +4,7 @@ metadata:
   name: uptime-kuma
   namespace: default
 spec:
-  replicas: 0
+  replicas: 1
   strategy:
     type: Recreate
   selector:
@@ -16,7 +16,7 @@ spec:
         app.kubernetes.io/name: uptime-kuma
     spec:
       nodeSelector:
-        johto.narwhal-snapper-ts.net/workload: media
+        johto.narwhal-snapper-ts.net/workload: ingress
       terminationGracePeriodSeconds: 10
       containers:
         - name: uptime-kuma
@@ -55,7 +55,7 @@ spec:
       volumes:
         - name: data
           hostPath:
-            path: /mnt/Data/apps/uptime-kuma
+            path: /var/lib/uptime-kuma
             type: Directory
 ---
 apiVersion: v1
