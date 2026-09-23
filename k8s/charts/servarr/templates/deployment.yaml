@@ -24,7 +24,7 @@ spec:
         johto.narwhal-snapper-ts.net/workload: media
       initContainers:
         - name: prepare-config
-          image: docker.io/library/busybox@sha256:dc2d74b28e4cf8984fa52af1f39bc7c3d9c73760b41a74d629f5d11b1ab28616
+          image: docker.io/library/busybox@sha256:cac8f90bbee42dc962a6b38bb1a235948d070385bb9d996bba15a6db8d364008
           command: ["/bin/sh", "-ec"]
           args:
             - |
@@ -89,7 +89,7 @@ spec:
               readOnly: true
       {{- if $exporterEnabled }}
         - name: prepare-exporter-api-key
-          image: docker.io/library/busybox@sha256:dc2d74b28e4cf8984fa52af1f39bc7c3d9c73760b41a74d629f5d11b1ab28616
+          image: docker.io/library/busybox@sha256:cac8f90bbee42dc962a6b38bb1a235948d070385bb9d996bba15a6db8d364008
           command: ["/bin/sh", "-ec"]
           args:
             - |
