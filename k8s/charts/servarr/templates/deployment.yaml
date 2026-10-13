@@ -12,6 +12,9 @@ metadata:
   name: {{ $name }}
 spec:
   replicas: 1
+  # Each application has one writable config volume.
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ $name }}
@@ -23,6 +26,39 @@ spec:
       nodeSelector:
         johto.narwhal-snapper-ts.net/workload: media
       initContainers:
+        - name: wait-for-postgres
+          image: {{ required "database.clientImage is required" .Values.database.clientImage | quote }}
+          command: ["/bin/sh", "-ec"]
+          args:
+            - |
+              # Flux dependencies do not order pod startup after a node reboot.
+              until psql -X -w -q --dbname={{ $mainDatabase | quote }} --command="SELECT 1" >/dev/null{{ if .Values.database.logDatabase }} && psql -X -w -q --dbname={{ .Values.database.logDatabase | quote }} --command="SELECT 1" >/dev/null{{ end }}; do
+                echo "Waiting for PostgreSQL databases to accept authenticated queries"
+                sleep 5
+              done
+          env:
+            - name: PGCONNECT_TIMEOUT
+              value: "5"
+            - name: PGHOST
+              valueFrom:
+                secretKeyRef:
+                  key: host
+                  name: {{ $databaseSecretName }}
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: {{ $databaseSecretName }}
+            - name: PGPORT
+              valueFrom:
+                secretKeyRef:
+                  key: port
+                  name: {{ $databaseSecretName }}
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  key: username
+                  name: {{ $databaseSecretName }}
         - name: prepare-config
           image: docker.io/library/busybox@sha256:fd7dc98638c8e305f4dc34e979f1c0fdfdcaeb0fbf8fcff77ae834b6da3d7e6e
           command: ["/bin/sh", "-ec"]
