@@ -180,8 +180,8 @@ spec:
           readinessProbe:
             tcpSocket: { port: 8000 }
           resources:
-            requests: { cpu: 100m, memory: 1Gi }
-            limits: { memory: 2Gi }
+            requests: { cpu: 100m, memory: 2Gi }
+            limits: { memory: 4Gi }
           volumeMounts:
             - { name: data, mountPath: /paperless/data }
             - { name: consume, mountPath: /paperless/consume }
