@@ -30,7 +30,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: albyhub
-          image: ghcr.io/getalby/hub:v1.24.1@sha256:ca9da58cafd68e91358820a20d83d328a333a8f699007a70d9aa50538da7c129
+          image: ghcr.io/getalby/hub:v1.24.2@sha256:3050186f212af92df1daf3ac0d4ecd48666303e0d80af0fe9e46477e21e9724d
           env:
             - name: WORK_DIR
               value: /data/albyhub
