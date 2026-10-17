@@ -10,3 +10,4 @@ resources:
   - ombi.yaml
   - pocket-id.yaml
   - happyview.yaml
+  - hydrant.yaml

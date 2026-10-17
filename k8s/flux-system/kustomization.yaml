@@ -12,6 +12,7 @@ resources:
   - gotk-components.yaml
   - gotk-sync.yaml
   - happyview.yaml
+  - hydrant.yaml
   - ingress.yaml
   - immich.yaml
   - jellyfin.yaml

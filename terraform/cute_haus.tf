@@ -3,6 +3,7 @@ locals {
     "appview.cute.haus"   = true
     "collabora.cute.haus" = false
     "cute.haus"           = true
+    "hydrant.cute.haus"   = true
     "id.cute.haus"        = true
     "immich.cute.haus"    = false
     "kuma.cute.haus"      = true
