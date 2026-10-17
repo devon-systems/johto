@@ -21,7 +21,7 @@ spec:
         johto.narwhal-snapper-ts.net/workload: media
       containers:
         - name: skytrace
-          image: ghcr.io/alyraffauf/skytrace:latest@sha256:68fb1d755ed7881caddca3686fb76413c3975fe3361929bb482d54d132d42e98
+          image: ghcr.io/alyraffauf/skytrace:latest
           env:
             - name: SKYTRACE_IGNORE_NO_UNAUTHENTICATED
               value: "true"
