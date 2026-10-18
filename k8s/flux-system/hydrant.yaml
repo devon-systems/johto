@@ -6,7 +6,7 @@ metadata:
 spec:
   dependsOn:
     - name: secrets
-  interval: 10m
+  interval: 5m
   retryInterval: 1m
   path: ./k8s/hydrant
   prune: true
