@@ -11,7 +11,6 @@ _: {
       "--keep-monthly 3"
     ];
     rebuildableRetention = ["--keep-daily 7" "--keep-weekly 4"];
-    metricsRetention = ["--keep-daily 3" "--keep-weekly 2"];
 
     appBackup = {
       name,
@@ -110,14 +109,6 @@ _: {
         inhibitsSleep = false;
       };
 
-      loki = appBackup {
-        name = "loki";
-        paths = ["/var/lib/loki"];
-        pruneOpts = metricsRetention;
-        extraBackupArgs = ["--cleanup-cache"];
-        inhibitsSleep = false;
-      };
-
       nextcloud = appBackup {
         name = "nextcloud";
         paths = ["/mnt/Data/apps/nextcloud/html"];
@@ -140,14 +131,6 @@ _: {
           "--no-scan"
           "--exclude=/mnt/Data/apps/plex/Library/Application Support/Plex Media Server/Plug-in Support/Databases"
         ];
-      };
-
-      prometheus = appBackup {
-        name = "prometheus";
-        paths = ["/var/lib/prometheus2"];
-        pruneOpts = metricsRetention;
-        extraBackupArgs = ["--cleanup-cache"];
-        inhibitsSleep = false;
       };
 
       qbittorrent = appBackup {

@@ -1,5 +1,5 @@
 _: {
-  flake.nixosModules.goldenrod = _: {
+  flake.nixosModules.olivine = _: {
     services.prometheus = {
       enable = true;
       port = 3020;
@@ -32,7 +32,7 @@ _: {
           job_name = "smartctl";
           static_configs = [
             {
-              targets = ["127.0.0.1:9633"];
+              targets = ["goldenrod.johto:9633"];
               labels.instance = "goldenrod";
             }
           ];

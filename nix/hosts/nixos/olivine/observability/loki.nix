@@ -1,5 +1,5 @@
 _: {
-  flake.nixosModules.goldenrod = _: {
+  flake.nixosModules.olivine = _: {
     services.loki = {
       enable = true;
       configuration = {

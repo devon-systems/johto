@@ -4,7 +4,7 @@ _: {
     lib,
     ...
   }: let
-    lokiUrl = "http://goldenrod.johto:3030/loki/api/v1/push";
+    lokiUrl = "http://olivine.johto:3030/loki/api/v1/push";
   in {
     services.alloy.enable = true;
 
@@ -62,7 +62,7 @@ _: {
 
         prometheus.remote_write "comin" {
           endpoint {
-            url = "http://goldenrod.johto:3020/api/v1/write"
+            url = "http://olivine.johto:3020/api/v1/write"
           }
         }
       '';

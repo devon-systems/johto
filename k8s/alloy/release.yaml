@@ -184,7 +184,7 @@ spec:
 
           prometheus.remote_write "johto" {
             endpoint {
-              url = "http://10.254.2.3:3020/api/v1/write"
+              url = "http://10.254.2.2:3020/api/v1/write"
             }
           }
 
@@ -243,7 +243,7 @@ spec:
 
           loki.write "johto" {
             endpoint {
-              url = "http://10.254.2.3:3030/loki/api/v1/push"
+              url = "http://10.254.2.2:3030/loki/api/v1/push"
             }
           }
       extraEnv:
