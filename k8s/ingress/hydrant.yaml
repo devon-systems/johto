@@ -30,6 +30,13 @@ spec:
                 name: hydrant
                 port:
                   name: http
+          - path: /stats
+            pathType: Exact
+            backend:
+              service:
+                name: hydrant
+                port:
+                  name: http
           - path: /version
             pathType: Exact
             backend:
