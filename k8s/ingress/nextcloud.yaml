@@ -1,0 +1,71 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: nextcloud-cute-haus
+  namespace: nextcloud
+spec:
+  dnsNames:
+    - nextcloud.cute.haus
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt
+  secretName: nextcloud-cute-haus-tls
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nextcloud
+  namespace: nextcloud
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: nextcloud.cute.haus
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: nextcloud
+                port:
+                  name: http
+  tls:
+    - hosts:
+        - nextcloud.cute.haus
+      secretName: nextcloud-cute-haus-tls
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: collabora-cute-haus
+  namespace: nextcloud
+spec:
+  dnsNames:
+    - collabora.cute.haus
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt
+  secretName: collabora-cute-haus-tls
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: collabora
+  namespace: nextcloud
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: collabora.cute.haus
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: collabora
+                port:
+                  name: http
+  tls:
+    - hosts:
+        - collabora.cute.haus
+      secretName: collabora-cute-haus-tls

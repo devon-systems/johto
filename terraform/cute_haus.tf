@@ -7,6 +7,7 @@ locals {
     "id.cute.haus"        = true
     "immich.cute.haus"    = false
     "kuma.cute.haus"      = true
+    "nextcloud.cute.haus" = false
     "paperless.cute.haus" = false
   }
 }

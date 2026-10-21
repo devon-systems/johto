@@ -10,7 +10,6 @@ spec:
     - name: arr
     - name: calibre-web
     - name: forgejo
-    - name: nextcloud
     - name: pinepods
     - name: plex
     - name: searxng
