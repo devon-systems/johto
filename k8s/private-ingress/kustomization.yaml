@@ -9,6 +9,7 @@ resources:
   - jellyfin.yaml
   - lidarr.yaml
   - navidrome.yaml
+  - nextcloud.yaml
   - pinepods.yaml
   - prowlarr.yaml
   - qbittorrent.yaml

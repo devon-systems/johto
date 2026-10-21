@@ -109,7 +109,7 @@ spec:
             - name: DONT_GEN_SSL_CERT
               value: "true"
             - name: aliasgroup1
-              value: https://nextcloud\.cute\.haus
+              value: http://nextcloud.nextcloud.svc:80
             - name: extra_params
               value: --o:ssl.enable=false --o:ssl.termination=true
             - name: server_name
@@ -188,7 +188,8 @@ spec:
             - { name: MAIL_DOMAIN, value: aly.social }
             - { name: MAIL_FROM_ADDRESS, value: admin }
             - { name: NEXTCLOUD_ADMIN_USER, value: alyraffauf }
-            - { name: NEXTCLOUD_TRUSTED_DOMAINS, value: nextcloud.cute.haus }
+            - name: NEXTCLOUD_TRUSTED_DOMAINS
+              value: nextcloud.narwhal-snapper.ts.net nextcloud.nextcloud.svc
             - { name: OBJECTSTORE_S3_AUTOCREATE, value: "false" }
             - { name: OBJECTSTORE_S3_BUCKET, value: aly-nextcloud }
             - { name: OBJECTSTORE_S3_HOST, value: 10.254.2.3 }
@@ -196,8 +197,9 @@ spec:
             - { name: OBJECTSTORE_S3_REGION, value: garage }
             - { name: OBJECTSTORE_S3_SSL, value: "false" }
             - { name: OBJECTSTORE_S3_USEPATH_STYLE, value: "true" }
-            - { name: OVERWRITECLIURL, value: https://nextcloud.cute.haus }
-            - { name: OVERWRITEHOST, value: nextcloud.cute.haus }
+            - name: OVERWRITECLIURL
+              value: https://nextcloud.narwhal-snapper.ts.net
+            - { name: OVERWRITEHOST, value: nextcloud.narwhal-snapper.ts.net }
             - { name: OVERWRITEPROTOCOL, value: https }
             - { name: PHP_MEMORY_LIMIT, value: 512M }
             - { name: PHP_UPLOAD_LIMIT, value: 10G }
@@ -242,6 +244,9 @@ spec:
           volumeMounts:
             - name: html
               mountPath: /var/www/html
+            - name: hooks
+              mountPath: /docker-entrypoint-hooks.d/before-starting/configure.sh
+              subPath: configure.sh
         - name: cron
           image: docker.io/library/nextcloud:35-apache@sha256:a588aa5353703b44106a6129adaaf7bf22521b7a4754f9f529b3228d6aa390c5
           command: [/bin/sh, -ec]
@@ -268,6 +273,10 @@ spec:
             - name: html
               mountPath: /var/www/html
       volumes:
+        - name: hooks
+          configMap:
+            name: nextcloud-hooks
+            defaultMode: 0555
         - name: html
           hostPath:
             path: /mnt/Data/apps/nextcloud/html

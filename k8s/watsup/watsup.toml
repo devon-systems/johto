@@ -35,7 +35,8 @@ icon = "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/immich.png"
 
 [[sections.services]]
 name = "Nextcloud"
-url = "https://nextcloud.cute.haus"
+url = "https://nextcloud.narwhal-snapper.ts.net"
+healthUrl = "http://nextcloud.nextcloud.svc/status.php"
 icon = "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/nextcloud.png"
 
 [[sections.services]]
