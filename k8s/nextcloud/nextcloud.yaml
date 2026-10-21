@@ -158,7 +158,7 @@ spec:
         fsGroup: 33
       containers:
         - name: nextcloud
-          image: docker.io/library/nextcloud:35-apache@sha256:d6198cead254f5531b83bd42193b383825f152d20a8355eb0d31e612d38d1ec4
+          image: docker.io/library/nextcloud:35-apache@sha256:3f05f4d5eded9d3d029e617926500645cca6344710364737a374088f6811095a
           command: [/bin/sh, -ec]
           args:
             - |
@@ -248,7 +248,7 @@ spec:
               mountPath: /docker-entrypoint-hooks.d/before-starting/configure.sh
               subPath: configure.sh
         - name: cron
-          image: docker.io/library/nextcloud:35-apache@sha256:d6198cead254f5531b83bd42193b383825f152d20a8355eb0d31e612d38d1ec4
+          image: docker.io/library/nextcloud:35-apache@sha256:3f05f4d5eded9d3d029e617926500645cca6344710364737a374088f6811095a
           command: [/bin/sh, -ec]
           args:
             [
