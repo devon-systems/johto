@@ -1,20 +1,105 @@
-apiVersion: helm.toolkit.fluxcd.io/v2
-kind: HelmRelease
+apiVersion: apps/v1
+kind: Deployment
 metadata:
+  namespace: arr
   name: navidrome
-  namespace: flux-system
 spec:
-  suspend: true
-  chart:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: navidrome
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: navidrome
     spec:
-      chart: ./k8s/charts/navidrome
-      reconcileStrategy: Revision
-      sourceRef:
-        kind: GitRepository
-        name: flux-system
-      version: 0.1.0
-  interval: 30m
-  releaseName: navidrome
-  targetNamespace: arr
-  values:
-    replicaCount: 1
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      nodeSelector:
+        johto.narwhal-snapper-ts.net/workload: media
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+        fsGroup: 1000
+      containers:
+        - name: navidrome
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [NET_RAW]
+          image: deluan/navidrome:0.64.2@sha256:38dc2727bfcfd5ede290f8ada114fc90368146f265ae4701ddddbcbe2a44ee52
+          env:
+            - name: ND_ADDRESS
+              value: 0.0.0.0
+            - name: ND_DATAFOLDER
+              value: /data
+            - name: ND_DEFAULTTHEME
+              value: Auto
+            - name: ND_ENABLEUSEREDITING
+              value: "false"
+            - name: ND_LYRICSPRIORITY
+              value: .lrc,nd-lyrics,.txt,embedded
+            - name: ND_MUSICFOLDER
+              value: /mnt/Media/Music
+            - name: ND_PORT
+              value: "4533"
+            - name: ND_SUBSONICARTISTPARTICIPATIONS
+              value: "true"
+          ports:
+            - containerPort: 4533
+              name: http
+          readinessProbe:
+            httpGet:
+              path: /ping
+              port: http
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: http
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              memory: 1Gi
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: music
+              mountPath: /mnt/Media
+              readOnly: true
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: navidrome-data
+        - name: music
+          hostPath:
+            path: /mnt/Media
+            type: Directory
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: arr
+  name: navidrome-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: arr
+  name: navidrome
+spec:
+  selector:
+    app.kubernetes.io/name: navidrome
+  ports:
+    - name: http
+      port: 80
+      targetPort: http

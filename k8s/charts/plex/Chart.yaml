@@ -1,5 +1,0 @@
-apiVersion: v2
-name: plex
-description: Plex Media Server on Goldenrod
-type: application
-version: 0.4.0
