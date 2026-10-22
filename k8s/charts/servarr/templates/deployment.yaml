@@ -23,10 +23,19 @@ spec:
       labels:
         app.kubernetes.io/name: {{ $name }}
     spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       nodeSelector:
         johto.narwhal-snapper-ts.net/workload: media
       initContainers:
         - name: wait-for-postgres
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [NET_RAW]
           image: {{ required "database.clientImage is required" .Values.database.clientImage | quote }}
           command: ["/bin/sh", "-ec"]
           args:
@@ -60,6 +69,10 @@ spec:
                   key: username
                   name: {{ $databaseSecretName }}
         - name: prepare-config
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [NET_RAW]
           image: docker.io/library/busybox@sha256:fd7dc98638c8e305f4dc34e979f1c0fdfdcaeb0fbf8fcff77ae834b6da3d7e6e
           command: ["/bin/sh", "-ec"]
           args:
@@ -125,6 +138,10 @@ spec:
               readOnly: true
       {{- if $exporterEnabled }}
         - name: prepare-exporter-api-key
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [NET_RAW]
           image: docker.io/library/busybox@sha256:fd7dc98638c8e305f4dc34e979f1c0fdfdcaeb0fbf8fcff77ae834b6da3d7e6e
           command: ["/bin/sh", "-ec"]
           args:
@@ -145,6 +162,10 @@ spec:
       {{- end }}
       containers:
         - name: {{ $name }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [NET_RAW]
           image: {{ $image | quote }}
           env:
             - name: PGID
@@ -211,6 +232,10 @@ spec:
               mountPath: /mnt/Backblaze
         {{- if $exporterEnabled }}
         - name: exporter
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [NET_RAW]
           image: {{ required "exporter.image is required when exporter.enabled" .Values.exporter.image | quote }}
           args: [{{ $name | quote }}]
           env:
