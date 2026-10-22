@@ -211,7 +211,7 @@ spec:
           discovery.kubernetes "logs" {
             role = "pod"
             namespaces {
-              names = ["alby", "alloy-system", "arr", "audiobookshelf", "calibre-web", "cert-manager", "cnpg-system", "default", "flux-system", "forgejo", "happyview", "hydrant", "identity", "immich", "jellyfin", "kube-system", "nextcloud", "ombi", "paperless", "pinepods", "plex", "searxng", "skytrace", "tailscale", "websites"]
+              names = ["alby", "alloy-system", "arr", "audiobookshelf", "calibre-web", "cert-manager", "cnpg-system", "default", "flux-system", "forgejo", "happyview", "hydrant", "identity", "immich", "jellyfin", "kube-system", "nextcloud", "ombi", "paperless", "pinepods", "plex", "skytrace", "tailscale", "websites"]
             }
           }
 

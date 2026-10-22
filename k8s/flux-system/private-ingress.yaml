@@ -12,7 +12,6 @@ spec:
     - name: forgejo
     - name: pinepods
     - name: plex
-    - name: searxng
     - name: skytrace
     - name: tailscale-private-ingress
   interval: 10m

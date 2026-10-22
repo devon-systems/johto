@@ -13,7 +13,6 @@ resources:
   - prowlarr.yaml
   - qbittorrent.yaml
   - radarr.yaml
-  - searxng.yaml
   - seerr.yaml
   - skytrace.yaml
   - sonarr.yaml
