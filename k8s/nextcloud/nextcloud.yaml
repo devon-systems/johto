@@ -107,6 +107,16 @@ spec:
     metadata:
       labels:
         app: collabora
+      annotations:
+        security.aly.codes/exception-seccomp:
+          Collabora document jails use namespace and
+          mount operations outside RuntimeDefault.
+        security.aly.codes/exception-privilege-escalation:
+          Collabora document isolation
+          uses privileged helper binaries.
+        security.aly.codes/exception-added-capabilities:
+          MKNOD creates device nodes inside
+          Collabora document jails.
     spec:
       automountServiceAccountToken: false
       enableServiceLinks: false
@@ -145,6 +155,7 @@ spec:
           securityContext:
             capabilities:
               add: [MKNOD]
+              drop: [NET_RAW]
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -162,6 +173,10 @@ spec:
     metadata:
       labels:
         app: nextcloud
+      annotations:
+        security.aly.codes/exception-host-path:
+          The existing Nextcloud data directory
+          remains on Goldenrod's backed-up storage.
     spec:
       automountServiceAccountToken: false
       enableServiceLinks: false
