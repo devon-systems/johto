@@ -24,6 +24,11 @@ spec:
       retries: 3
   values:
     alloy:
+      storagePath: /var/lib/alloy
+      mounts:
+        extra:
+          - name: data
+            mountPath: /var/lib/alloy
       configMap:
         content: |-
           discovery.kubernetes "nodes" {
@@ -60,6 +65,13 @@ spec:
               regex = "up|scrape_.*|container_cpu_usage_seconds_total|container_cpu_cfs_periods_total|container_cpu_cfs_throttled_periods_total|container_memory_working_set_bytes|container_memory_rss|container_oom_events_total"
               action = "keep"
             }
+          }
+
+          prometheus.exporter.self "cluster" {}
+          prometheus.scrape "alloy_self" {
+            targets = prometheus.exporter.self.cluster.targets
+            job_name = "alloy-kubernetes"
+            forward_to = [prometheus.remote_write.johto.receiver]
           }
 
           prometheus.scrape "kube_state_metrics" {
@@ -183,61 +195,67 @@ spec:
           }
 
           prometheus.remote_write "johto" {
+            external_labels = {cluster = "johto"}
             endpoint {
               url = "http://10.254.2.2:3020/api/v1/write"
             }
           }
 
-          discovery.kubernetes "traefik" {
+          discovery.kubernetes "logs" {
             role = "pod"
-
             namespaces {
-              names = ["kube-system"]
-            }
-
-            selectors {
-              role  = "pod"
-              label = "app.kubernetes.io/name=traefik"
+              names = ["alby", "alloy-system", "arr", "audiobookshelf", "calibre-web", "cert-manager", "cnpg-system", "default", "flux-system", "forgejo", "happyview", "hydrant", "identity", "immich", "jellyfin", "kube-system", "nextcloud", "ombi", "paperless", "pinepods", "plex", "searxng", "skytrace", "tailscale", "websites"]
             }
           }
 
-          discovery.relabel "traefik" {
-            targets = discovery.kubernetes.traefik.targets
-
+          discovery.relabel "logs" {
+            targets = discovery.kubernetes.logs.targets
+            rule {
+              source_labels = ["__meta_kubernetes_pod_node_name"]
+              target_label = "node"
+            }
             rule {
               source_labels = ["__meta_kubernetes_namespace"]
-              target_label  = "namespace"
+              target_label = "namespace"
             }
-
             rule {
               source_labels = ["__meta_kubernetes_pod_name"]
-              target_label  = "pod"
+              target_label = "pod"
             }
-
             rule {
               source_labels = ["__meta_kubernetes_pod_container_name"]
-              target_label  = "container"
+              target_label = "container"
             }
-
+            rule {
+              source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_name"]
+              target_label = "service_name"
+            }
             rule {
               source_labels = ["__meta_kubernetes_namespace", "__meta_kubernetes_pod_container_name"]
-              separator     = "/"
-              target_label  = "job"
+              separator = "/"
+              target_label = "job"
             }
           }
 
-          loki.source.kubernetes "traefik" {
-            targets    = discovery.relabel.traefik.output
-            forward_to = [loki.process.traefik.receiver]
+          loki.source.kubernetes "workloads" {
+            targets = discovery.relabel.logs.output
+            forward_to = [loki.process.workloads.receiver]
           }
 
-          loki.process "traefik" {
+          loki.source.kubernetes_events "cluster" {
+            job_name = "kubernetes-events"
+            log_format = "json"
+            forward_to = [loki.process.workloads.receiver]
+          }
+
+          loki.process "workloads" {
             stage.static_labels {
-              values = {
-                cluster = "johto",
-              }
+              values = {cluster = "johto"}
             }
-
+            stage.replace {
+              expression = `(?i)(?:x-plex-token|plexonlinetoken|access_token|refresh_token|api[_-]?key|password|client_secret|authorization)["' ]*(?:[:=]|%3[dDaA])["' ]*(?:bearer\s+|basic\s+)?([^&\s"'<>]+)`
+              replace = "[REDACTED]"
+            }
             forward_to = [loki.write.johto.receiver]
           }
 
@@ -255,14 +273,21 @@ spec:
       enableReporting: false
       resources:
         limits:
-          cpu: 300m
-          memory: 512Mi
+          cpu: 500m
+          memory: 768Mi
         requests:
           cpu: 25m
           memory: 128Mi
     controller:
       type: deployment
       replicas: 1
+      updateStrategy:
+        type: Recreate
+      volumes:
+        extra:
+          - name: data
+            persistentVolumeClaim:
+              claimName: alloy-data
     crds:
       create: false
     image:
