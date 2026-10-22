@@ -15,12 +15,21 @@ spec:
       labels:
         app.kubernetes.io/name: jellyfin
     spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
       nodeSelector:
         johto.narwhal-snapper-ts.net/workload: media
       securityContext:
+        seccompProfile:
+          type: RuntimeDefault
         supplementalGroups: [26, 303]
       containers:
         - name: jellyfin
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - NET_RAW
           # Version and digest are set in kustomization.yaml.
           image: jellyfin/jellyfin
           env:
