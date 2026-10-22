@@ -6,7 +6,6 @@ metadata:
 spec:
   dependsOn:
     - name: secrets
-    - name: immich
   interval: 10m
   retryInterval: 1m
   path: ./k8s/alloy
