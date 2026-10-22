@@ -15,6 +15,7 @@ resources:
   - hydrant.yaml
   - ingress.yaml
   - immich.yaml
+  - intel-gpu-plugin.yaml
   - jellyfin.yaml
   - letsencrypt.yaml
   - arr.yaml

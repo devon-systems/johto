@@ -5,6 +5,7 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
+    - name: intel-gpu-plugin
     - name: namespaces
   suspend: false
   interval: 10m
