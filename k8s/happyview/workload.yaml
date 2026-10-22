@@ -22,6 +22,11 @@ spec:
           type: RuntimeDefault
       containers:
         - name: happyview
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - NET_RAW
           image: ghcr.io/gamesgamesgamesgamesgames/happyview:2.16.0@sha256:ebc1e39fdf845a52d5c2017809bb447b450b2b4dde32c89d3a970a697dad1ce9
           envFrom:
             - secretRef:
