@@ -10,7 +10,6 @@
       modules = [
         inputs.determinate.nixosModules.default
         inputs.disko.nixosModules.disko
-        inputs.microvm.nixosModules.host
         inputs.sops-nix.nixosModules.sops
         self.nixosModules.alloy
         self.nixosModules.aly

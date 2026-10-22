@@ -9,11 +9,10 @@ For my personal nix flake, check out [hoenn](https://github.com/alyraffauf/hoenn
 
 ## Architecture
 
-| Host          | Role                                                                                                    |
-| ------------- | ------------------------------------------------------------------------------------------------------- |
-| `olivine`     | k3s server and control plane, public ingress workloads, private DNS, and etcd backups                   |
-| `goldenrod`   | k3s worker for media workloads, persistent storage, NFS, Garage, observability, and application backups |
-| `cherrygrove` | Persistent NixOS MicroVM hosted by Goldenrod                                                            |
+| Host        | Role                                                                                                    |
+| ----------- | ------------------------------------------------------------------------------------------------------- |
+| `olivine`   | k3s server and control plane, public ingress workloads, private DNS, and etcd backups                   |
+| `goldenrod` | k3s worker for media workloads, persistent storage, NFS, Garage, observability, and application backups |
 
 The nodes communicate over a dedicated WireGuard network. Tailscale provides
 private service access, while public services enter through Olivine. Flux
@@ -36,8 +35,8 @@ terraform/            OpenTofu configuration for Cloudflare DNS
 scripts/              Repository maintenance utilities
 ```
 
-`flake.nix` assembles the Nix modules and exposes the `olivine`, `goldenrod`,
-and `cherrygrove` NixOS configurations. Kubernetes applications are grouped by
+`flake.nix` assembles the Nix modules and exposes the `olivine` and `goldenrod`
+NixOS configurations. Kubernetes applications are grouped by
 service under `k8s/`. `k8s/flux-system/` defines their reconciliation order.
 
 ## Work locally

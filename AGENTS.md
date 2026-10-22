@@ -1,6 +1,6 @@
 # Work in Johto
 
-Johto runs the home lab. `nix/hosts/nixos/` contains Olivine, Goldenrod, and Cherrygrove. `k8s/` contains Flux-managed workloads. `terraform/` manages Cloudflare DNS. Keep host secrets in `secrets/`, Kubernetes secrets in `k8s/secrets/`, and public SOPS recipients in `keys/`.
+Johto runs the home lab. `nix/hosts/nixos/` contains Olivine and Goldenrod. `k8s/` contains Flux-managed workloads. `terraform/` manages Cloudflare DNS. Keep host secrets in `secrets/`, Kubernetes secrets in `k8s/secrets/`, and public SOPS recipients in `keys/`.
 
 ## Check a change
 
@@ -9,7 +9,6 @@ Run `nix fmt` and `nix flake check` before you commit. Build the changed host.
 ```sh
 nix build .#nixosConfigurations.olivine.config.system.build.toplevel
 nix build .#nixosConfigurations.goldenrod.config.system.build.toplevel
-nix build .#nixosConfigurations.cherrygrove.config.system.build.toplevel
 ```
 
 If a NixOS host's `facter.json` changes, run `nix run github:alyraffauf/infra#generate-host-readmes`. Do not edit text between generated-section markers in a host README.
