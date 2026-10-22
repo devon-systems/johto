@@ -7,7 +7,7 @@ spec:
   dependsOn:
     - name: postgres-backups
     - name: secrets
-  # Restricts database clients, monitoring, API access, and object-store backups.
+  # Controls incoming database, instance-manager, and monitoring traffic.
   interval: 10m
   path: ./k8s/postgres
   prune: true
