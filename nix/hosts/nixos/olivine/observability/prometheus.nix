@@ -11,6 +11,24 @@ _: {
       };
       scrapeConfigs = [
         {
+          job_name = "loki";
+          static_configs = [
+            {
+              targets = ["127.0.0.1:3030"];
+              labels.instance = "olivine";
+            }
+          ];
+        }
+        {
+          job_name = "prometheus";
+          static_configs = [
+            {
+              targets = ["127.0.0.1:3020"];
+              labels.instance = "olivine";
+            }
+          ];
+        }
+        {
           job_name = "bazarr";
           scrape_interval = "60s";
           scrape_timeout = "55s";
