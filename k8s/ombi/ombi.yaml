@@ -25,6 +25,11 @@ spec:
           type: RuntimeDefault
       initContainers:
         - name: database-configuration
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - NET_RAW
           image: lscr.io/linuxserver/ombi:latest@sha256:ea8248433a3d37eaf46a59e4cb5160814d35a5b5ba35eac47a5018747acf2632
           command:
             - sh
@@ -38,6 +43,11 @@ spec:
               readOnly: true
       containers:
         - name: ombi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - NET_RAW
           image: lscr.io/linuxserver/ombi:latest@sha256:ea8248433a3d37eaf46a59e4cb5160814d35a5b5ba35eac47a5018747acf2632
           env:
             - name: PUID
