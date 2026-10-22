@@ -19,9 +19,9 @@ dependencies. Mail ports are allowed only for applications that use them.
 Existing Valkey, Tika, and Gotenberg policies restrict access to their clients.
 
 Public outbound rules exclude private, tailnet, link-local, reserved, and
-cluster public ingress addresses. Standard NetworkPolicy cannot select
-external services by hostname. An allowed public web port can reach any
-public address outside those exclusions.
+fixed public ingress addresses. They do not track the changing home WAN
+address. Standard NetworkPolicy cannot select external services by hostname.
+An allowed public web port can reach any public address outside those exclusions.
 
 Nextcloud reaches Garage on Goldenrod at `10.254.2.3:3900`. Ombi and Watsup
 reach Plex there on port `32400`. Collabora calls Nextcloud through
@@ -31,9 +31,11 @@ Watsup uses internal health URLs for local services.
 
 ## Exceptions and limits
 
-Uptime Kuma has restricted ingress and unrestricted outbound access for
-monitors. Plex retains host networking. Private applications without an
-egress policy retain their existing network access.
+Uptime Kuma and the Tailscale private ingress proxy have unrestricted outbound
+access. Backend ingress policies control which applications accept proxy
+connections. Plex and qBittorrent retain host networking and have no NetworkPolicy.
+Plex uses host networking for LAN discovery and direct client connections.
+Private applications without an egress policy retain their existing network access.
 
 Policies are additive. Another policy that selects the same pod can grant
 additional access. K3s uses kube-router to enforce these rules over Flannel.

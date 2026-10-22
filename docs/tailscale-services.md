@@ -42,11 +42,26 @@ spec:
 `navidrome.narwhal-snapper.ts.net`. Pick a name that is not already used by a
 service or a MagicDNS device.
 
-Add the file to `k8s/private-ingress/kustomization.yaml`, then render the
-directory before committing:
+Add the file to `k8s/private-ingress/kustomization.yaml`.
+
+If the backend has an ingress NetworkPolicy, allow the application's container
+port from the `tailscale` namespace and pods with these labels:
+
+```yaml
+tailscale.com/managed: "true"
+tailscale.com/parent-resource-type: proxygroup
+tailscale.com/parent-resource: private-ingress
+```
+
+Use a single peer containing both `namespaceSelector` and `podSelector`, as in
+`k8s/audiobookshelf/network-policy.yaml`. The proxy has no egress allowlist.
+Tailscale discovers its public endpoints without a configured home WAN address.
+
+If you changed a backend policy, stage that file with `git add` before committing.
+Then check the Kubernetes resources and commit the route:
 
 ```sh
-kubectl kustomize k8s/private-ingress >/dev/null
+nix run .#check-k8s
 git add k8s/private-ingress
 git commit -m "feat(private-ingress): expose <app> through Tailscale"
 git push

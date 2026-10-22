@@ -3,13 +3,6 @@ kind: ProxyClass
 metadata:
   name: private-ingress
 spec:
-  staticEndpoints:
-    nodePort:
-      ports:
-        - port: 31667
-          endPort: 31680
-      selector:
-        kubernetes.io/hostname: goldenrod
   statefulSet:
     pod:
       nodeSelector:
