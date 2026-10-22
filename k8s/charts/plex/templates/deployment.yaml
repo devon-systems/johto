@@ -93,9 +93,37 @@ spec:
             - name: plugin-cache
               mountPath: /config/Library/Application Support/Plex Media Server/Plug-in Support/Caches
             - name: media
-              mountPath: /mnt/Media
+              mountPath: /mnt/Media/Anime
+              subPath: Anime
+              readOnly: true
+            - name: media
+              mountPath: /mnt/Media/Movies
+              subPath: Movies
+              readOnly: true
+            - name: media
+              mountPath: /mnt/Media/Music
+              subPath: Music
+              readOnly: true
+            - name: media
+              mountPath: /mnt/Media/Shows
+              subPath: Shows
+              readOnly: true
             - name: backblaze
-              mountPath: /mnt/Backblaze
+              mountPath: /mnt/Backblaze/Anime
+              subPath: Anime
+              readOnly: true
+            - name: backblaze
+              mountPath: /mnt/Backblaze/Audiobooks
+              subPath: Audiobooks
+              readOnly: true
+            - name: backblaze
+              mountPath: /mnt/Backblaze/Movies
+              subPath: Movies
+              readOnly: true
+            - name: backblaze
+              mountPath: /mnt/Backblaze/Shows
+              subPath: Shows
+              readOnly: true
       volumes:
         - name: runtime
           emptyDir:
