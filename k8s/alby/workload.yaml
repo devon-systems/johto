@@ -35,7 +35,7 @@ spec:
             capabilities:
               drop:
                 - NET_RAW
-          image: ghcr.io/getalby/hub:v1.24.3@sha256:906e54e4c14b1508d5566271331135fcd1fe9b86ea3bf6e42502f2de6c3c2b41
+          image: ghcr.io/getalby/hub:v1.24.4@sha256:ac82a3b2a94de92f3f168fab5b41c48f4316ad864cad6afdba2068beb229a2da
           env:
             - name: WORK_DIR
               value: /data/albyhub
