@@ -7,7 +7,7 @@ spec:
   dependsOn:
     - name: postgres-backups
     - name: secrets
-  # Includes the Alloy-only metrics ingress policy.
+  # Restricts database clients, monitoring, API access, and object-store backups.
   interval: 10m
   path: ./k8s/postgres
   prune: true
