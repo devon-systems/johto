@@ -177,27 +177,6 @@ spec:
               drop:
                 - NET_RAW
           image: docker.io/library/nextcloud:35-apache@sha256:301e07b7f661c122752cc2c01b76f15036a156f2b6d794c76621b7d0a6bb8a50
-          command: [/bin/sh, -ec]
-          args:
-            - |
-              config=/var/www/html/config/config.php
-              if [ -f "$config" ]; then
-                if grep -Fq "'dbhost' => 'postgres'" "$config"; then
-                  sed -i \
-                    -e "s/'dbhost' => 'postgres'/'dbhost' => 'pg-shared-rw.cnpg-system.svc'/" \
-                    -e "s/'host' => 'nextcloud-valkey'/'host' => 'valkey'/" \
-                    "$config"
-                elif ! grep -Fq "'dbhost' => 'pg-shared-rw.cnpg-system.svc'" "$config"; then
-                  echo "unexpected Nextcloud database host" >&2
-                  exit 1
-                fi
-
-                sed -i \
-                  -e "s/'hostname' => 'host.docker.internal'/'hostname' => '10.254.2.3'/" \
-                  -e "s/'hostname' => '10.254.0.1'/'hostname' => '10.254.2.3'/" \
-                  "$config"
-              fi
-              exec /entrypoint.sh apache2-foreground
           envFrom:
             - secretRef:
                 name: nextcloud-env
@@ -221,6 +200,7 @@ spec:
             - { name: PHP_UPLOAD_LIMIT, value: 10G }
             - { name: POSTGRES_DB, value: nextcloud }
             - { name: POSTGRES_HOST, value: pg-shared-rw.cnpg-system.svc }
+            - { name: NC_dbhost, value: "$(POSTGRES_HOST)" }
             - { name: POSTGRES_USER, value: nextcloud }
             - { name: REDIS_HOST, value: valkey }
             - { name: REDIS_HOST_PORT, value: "6379" }
@@ -277,6 +257,7 @@ spec:
           env:
             - { name: POSTGRES_DB, value: nextcloud }
             - { name: POSTGRES_HOST, value: pg-shared-rw.cnpg-system.svc }
+            - { name: NC_dbhost, value: "$(POSTGRES_HOST)" }
             - { name: POSTGRES_USER, value: nextcloud }
             - { name: REDIS_HOST, value: valkey }
             - { name: REDIS_HOST_PORT, value: "6379" }
