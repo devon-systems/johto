@@ -32,7 +32,7 @@ spec:
             capabilities:
               drop:
                 - NET_RAW
-          image: ghcr.io/alyraffauf/watsup:latest@sha256:f28824be43af70f7a163dfa8056b77fadd0fa59f95cad1d713e8cad35c529b18
+          image: ghcr.io/alyraffauf/watsup:latest@sha256:a6c521da6597e7c022beb1a86e1daaa8e002583accb1c22c2765b898293d0c50
           imagePullPolicy: IfNotPresent
           env:
             - name: WATSUP_CONFIG_PATH
