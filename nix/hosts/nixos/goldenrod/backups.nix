@@ -83,10 +83,10 @@ _: {
             ${pkgs.gzip}/bin/gzip -t "$dump"
             test "$before" = "$(${pkgs.coreutils}/bin/stat -c '%i:%s:%Y' "$dump")"
             (
-            temporary=$(${pkgs.coreutils}/bin/mktemp /var/lib/johto-backup-metrics/immich-dump.XXXXXX)
+            temporary=$(${pkgs.coreutils}/bin/mktemp /var/lib/johto-metrics/immich-dump.XXXXXX)
             printf 'johto_immich_dump_timestamp_seconds %s\n' "$timestamp" > "$temporary"
             ${pkgs.coreutils}/bin/chmod 644 "$temporary"
-            ${pkgs.coreutils}/bin/mv "$temporary" /var/lib/johto-backup-metrics/immich-dump.prom
+            ${pkgs.coreutils}/bin/mv "$temporary" /var/lib/johto-metrics/immich-dump.prom
             ) || true
           '';
         })
