@@ -7,7 +7,7 @@ spec:
   suspend: false
   interval: 10m
   path: ./k8s/plex
-  prune: true
+  prune: false
   sourceRef:
     kind: GitRepository
     name: flux-system
