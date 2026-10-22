@@ -117,9 +117,17 @@ spec:
     spec:
       automountServiceAccountToken: false
       enableServiceLinks: false
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       nodeSelector: { johto.narwhal-snapper-ts.net/workload: media }
       containers:
         - name: gotenberg
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - NET_RAW
           image: gotenberg/gotenberg:8@sha256:aa552cc115db488e0f0bcb07446aac13071ad51505b642c84bb894500907b42b
           startupProbe:
             httpGet: { path: /health, port: 3000 }
@@ -141,7 +149,13 @@ spec:
   strategy: { type: Recreate }
   selector: { matchLabels: { app: paperless } }
   template:
-    metadata: { labels: { app: paperless } }
+    metadata:
+      labels:
+        app: paperless
+      annotations:
+        security.aly.codes/exception-host-path:
+          Document storage and the scanner consumption
+          directory reside on Goldenrod.
     spec:
       automountServiceAccountToken: false
       enableServiceLinks: false
