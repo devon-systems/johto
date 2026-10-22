@@ -6,16 +6,7 @@ metadata:
 spec:
   dependsOn:
     - name: letsencrypt
-    - name: plex
-    - name: paperless
-    - name: nextcloud
-    - name: immich
-    - name: uptime-kuma
-    - name: watsup
-    - name: ombi
-    - name: pocket-id
-    - name: happyview
-    - name: hydrant
+    - name: traefik
   interval: 10m
   retryInterval: 1m
   path: ./k8s/ingress

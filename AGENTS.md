@@ -2,6 +2,9 @@
 
 Johto runs the home lab. `nix/hosts/nixos/` contains Olivine and Goldenrod. `k8s/` contains Flux-managed workloads. `terraform/` manages Cloudflare DNS. Keep host secrets in `secrets/`, Kubernetes secrets in `k8s/secrets/`, and public SOPS recipients in `keys/`.
 
+Follow [the Kubernetes resource conventions](k8s/README.md) for Flux ownership,
+dependencies, and validation.
+
 ## Check a change
 
 Run `nix fmt` and `nix flake check` before you commit. Build the changed host.

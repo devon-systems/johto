@@ -3,6 +3,5 @@ kind: Kustomization
 resources:
   - tautulli-network-policy.yaml
   - gpu-plugin.yaml
-  - namespace.yaml
   - plex.yaml
   - tautulli.yaml

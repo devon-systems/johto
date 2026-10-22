@@ -6,6 +6,7 @@ metadata:
 spec:
   suspend: false
   interval: 10m
+  retryInterval: 1m
   path: ./k8s/uptime-kuma
   prune: true
   sourceRef:

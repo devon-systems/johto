@@ -1,0 +1,23 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - alby.yaml
+  - alloy-system.yaml
+  - arr.yaml
+  - audiobookshelf.yaml
+  - calibre-web.yaml
+  - cert-manager.yaml
+  - cnpg-system.yaml
+  - forgejo.yaml
+  - happyview.yaml
+  - hydrant.yaml
+  - identity.yaml
+  - immich.yaml
+  - jellyfin.yaml
+  - nextcloud.yaml
+  - ombi.yaml
+  - paperless.yaml
+  - pinepods.yaml
+  - plex.yaml
+  - tailscale.yaml
+  - websites.yaml

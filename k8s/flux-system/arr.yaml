@@ -9,6 +9,7 @@ spec:
     - name: cnpg
     - name: postgres
   interval: 10m
+  retryInterval: 1m
   path: ./k8s/arr
   prune: true
   sourceRef:

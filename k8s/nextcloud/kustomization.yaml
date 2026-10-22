@@ -3,7 +3,6 @@ kind: Kustomization
 namespace: nextcloud
 resources:
   - network-policy.yaml
-  - namespace.yaml
   - nextcloud.yaml
   - valkey-network-policy.yaml
 configMapGenerator:

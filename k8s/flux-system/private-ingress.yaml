@@ -5,16 +5,9 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: alby
-    - name: audiobookshelf
-    - name: arr
-    - name: calibre-web
-    - name: forgejo
-    - name: pinepods
-    - name: plex
-    - name: skytrace
     - name: tailscale-private-ingress
   interval: 10m
+  retryInterval: 1m
   path: ./k8s/private-ingress
   prune: true
   sourceRef:

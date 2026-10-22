@@ -4,8 +4,11 @@ metadata:
   name: plex
   namespace: flux-system
 spec:
+  dependsOn:
+    - name: namespaces
   suspend: false
   interval: 10m
+  retryInterval: 1m
   path: ./k8s/plex
   prune: false
   sourceRef:
