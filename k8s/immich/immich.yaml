@@ -219,8 +219,10 @@ spec:
             requests:
               cpu: 100m
               memory: 1500Mi
+              gpu.intel.com/i915: "1"
             limits:
               memory: 4Gi
+              gpu.intel.com/i915: "1"
           startupProbe:
             httpGet: { path: /api/server/ping, port: http }
             failureThreshold: 60
