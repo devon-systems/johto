@@ -15,10 +15,20 @@ spec:
       labels:
         app.kubernetes.io/name: tautulli
     spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       nodeSelector:
         johto.narwhal-snapper-ts.net/workload: media
       containers:
         - name: tautulli
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - NET_RAW
           image: ghcr.io/tautulli/tautulli@sha256:a4323bc09b27e265e269d79421ed3eb795083ef988bb84788eba89e5738c8005
           env:
             - name: PGID

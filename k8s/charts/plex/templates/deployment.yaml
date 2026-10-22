@@ -17,14 +17,22 @@ spec:
       labels:
         app.kubernetes.io/name: plex
     spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
       dnsPolicy: ClusterFirstWithHostNet
       hostNetwork: true
       nodeSelector:
         johto.narwhal-snapper-ts.net/workload: media
       securityContext:
+        seccompProfile:
+          type: RuntimeDefault
         supplementalGroups: [44]
       containers:
         - name: plex
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [NET_RAW]
           image: plexinc/pms-docker:1.43.3.10861-07dfddaeb@sha256:5bc1d13f48da6366f46aaf2a3ce1a6292897eadc1f8efcbbd7321d30e94f2ed4
           env:
             - name: ADVERTISE_IP
