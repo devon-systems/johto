@@ -43,9 +43,19 @@ spec:
   template:
     metadata: { labels: { app: valkey } }
     spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       nodeSelector: { johto.narwhal-snapper-ts.net/workload: media }
       containers:
         - name: valkey
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - NET_RAW
           image: valkey/valkey:9-alpine@sha256:48332870af354a799964c0012ae1194a0bf2bf894eb508f945810596dc2d8d11
           args:
             [valkey-server, --maxmemory, 1gb, --maxmemory-policy, volatile-lru]
@@ -70,9 +80,19 @@ spec:
   template:
     metadata: { labels: { app: tika } }
     spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       nodeSelector: { johto.narwhal-snapper-ts.net/workload: media }
       containers:
         - name: tika
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - NET_RAW
           image: apache/tika:3.3.1.0-full@sha256:d8e6ed96260ad89307a93195a1b856102987a818ac648502f8efbaf313d32470
           startupProbe:
             tcpSocket: { port: 9998 }
@@ -95,6 +115,8 @@ spec:
   template:
     metadata: { labels: { app: gotenberg } }
     spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
       nodeSelector: { johto.narwhal-snapper-ts.net/workload: media }
       containers:
         - name: gotenberg
@@ -121,11 +143,18 @@ spec:
   template:
     metadata: { labels: { app: paperless } }
     spec:
+      automountServiceAccountToken: false
       enableServiceLinks: false
       nodeSelector: { johto.narwhal-snapper-ts.net/workload: media }
-      securityContext: { fsGroup: 1000 }
+      securityContext:
+        { fsGroup: 1000, seccompProfile: { type: RuntimeDefault } }
       containers:
         - name: paperless
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - NET_RAW
           image: ghcr.io/paperless-ngx/paperless-ngx:latest@sha256:dba0242c1df1843643df4eb50ce5639f3a7900f414879088fd5bed8eaf2d456d
           envFrom: [{ secretRef: { name: paperless-env } }]
           env:
