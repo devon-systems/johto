@@ -119,7 +119,7 @@ spec:
             - name: DONT_GEN_SSL_CERT
               value: "true"
             - name: aliasgroup1
-              value: https://nextcloud\.cute\.haus
+              value: http://nextcloud\.nextcloud\.svc:80
             - name: extra_params
               value: --o:ssl.enable=false --o:ssl.termination=true
             - name: server_name
@@ -260,6 +260,10 @@ spec:
           volumeMounts:
             - name: html
               mountPath: /var/www/html
+            - name: hooks
+              mountPath: /docker-entrypoint-hooks.d/before-starting/configure.sh
+              subPath: configure.sh
+              readOnly: true
         - name: cron
           image: docker.io/library/nextcloud:35-apache@sha256:3f05f4d5eded9d3d029e617926500645cca6344710364737a374088f6811095a
           command: [/bin/sh, -ec]
@@ -290,6 +294,10 @@ spec:
             - name: html
               mountPath: /var/www/html
       volumes:
+        - name: hooks
+          configMap:
+            name: nextcloud-hooks
+            defaultMode: 0555
         - name: html
           hostPath:
             path: /mnt/Data/apps/nextcloud/html

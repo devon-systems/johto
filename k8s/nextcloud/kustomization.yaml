@@ -1,6 +1,12 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+namespace: nextcloud
 resources:
+  - network-policy.yaml
   - namespace.yaml
   - nextcloud.yaml
   - valkey-network-policy.yaml
+configMapGenerator:
+  - name: nextcloud-hooks
+    files:
+      - configure.sh
