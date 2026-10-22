@@ -14,6 +14,10 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: jellyfin
+      annotations:
+        security.aly.codes/exception-host-path:
+          Media, GPU devices, configuration, and
+          transcode cache reside on Goldenrod.
     spec:
       automountServiceAccountToken: false
       enableServiceLinks: false

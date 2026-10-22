@@ -17,6 +17,13 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: plex
+      annotations:
+        security.aly.codes/exception-host-network:
+          Plex uses LAN discovery and direct
+          media connections.
+        security.aly.codes/exception-host-path:
+          Media, application state, transcode cache,
+          and extension configuration reside on Goldenrod.
     spec:
       automountServiceAccountToken: false
       enableServiceLinks: false

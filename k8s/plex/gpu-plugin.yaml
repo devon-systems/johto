@@ -11,6 +11,10 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: intel-gpu-plugin
+      annotations:
+        security.aly.codes/exception-host-path:
+          The device plugin reads DRM devices and
+          registers GPU resources through kubelet sockets and CDI.
     spec:
       automountServiceAccountToken: false
       enableServiceLinks: false

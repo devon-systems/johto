@@ -14,6 +14,10 @@ spec:
     metadata:
       labels:
         app: albyhub
+      annotations:
+        security.aly.codes/exception-host-path:
+          The existing wallet data directory remains
+          on Goldenrod's backed-up storage.
     spec:
       automountServiceAccountToken: false
       enableServiceLinks: false

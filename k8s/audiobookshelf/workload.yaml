@@ -14,6 +14,10 @@ spec:
     metadata:
       labels:
         app: audiobookshelf
+      annotations:
+        security.aly.codes/exception-host-path:
+          Audiobook libraries and application state
+          reside on Goldenrod.
     spec:
       automountServiceAccountToken: false
       enableServiceLinks: false

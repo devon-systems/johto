@@ -22,6 +22,8 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: {{ $name }}
+      annotations:
+        security.aly.codes/exception-host-path: Library, download, archive, and legacy import paths use Goldenrod's existing filesystems.
     spec:
       automountServiceAccountToken: false
       enableServiceLinks: false

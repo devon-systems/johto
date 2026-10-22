@@ -26,6 +26,10 @@ spec:
     metadata:
       labels:
         app: postgres
+      annotations:
+        security.aly.codes/exception-host-path:
+          The existing PostgreSQL data directory
+          remains on Goldenrod's backed-up storage.
     spec:
       automountServiceAccountToken: false
       securityContext:

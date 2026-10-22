@@ -16,6 +16,13 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: qbittorrent
+      annotations:
+        security.aly.codes/exception-host-network:
+          Peer traffic uses the media host network
+          and its configured inbound ports.
+        security.aly.codes/exception-host-path:
+          Torrent state and shared media remain
+          on Goldenrod's existing filesystems.
     spec:
       automountServiceAccountToken: false
       enableServiceLinks: false

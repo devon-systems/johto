@@ -14,6 +14,11 @@ spec:
     metadata:
       labels:
         app: calibre-web
+      annotations:
+        security.aly.codes/exception-host-port: Existing LAN access uses Goldenrod's port 8083.
+        security.aly.codes/exception-host-path:
+          The book library and application state
+          remain on Goldenrod's backed-up storage.
     spec:
       automountServiceAccountToken: false
       enableServiceLinks: false

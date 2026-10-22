@@ -107,6 +107,10 @@ spec:
     metadata:
       labels:
         app: machine-learning
+      annotations:
+        security.aly.codes/exception-host-path:
+          The model cache and GPU devices reside
+          on Goldenrod.
     spec:
       automountServiceAccountToken: false
       securityContext:
@@ -172,6 +176,10 @@ spec:
     metadata:
       labels:
         app: immich
+      annotations:
+        security.aly.codes/exception-host-path:
+          The photo library remains on Goldenrod's
+          backed-up storage.
     spec:
       automountServiceAccountToken: false
       securityContext:

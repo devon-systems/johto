@@ -12,6 +12,10 @@ spec:
     metadata:
       labels:
         app: pinepods
+      annotations:
+        security.aly.codes/exception-host-path:
+          Downloads, local media, and application
+          backups reside on Goldenrod.
     spec:
       automountServiceAccountToken: false
       enableServiceLinks: false

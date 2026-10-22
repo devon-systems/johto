@@ -14,6 +14,10 @@ spec:
     metadata:
       labels:
         app: forgejo
+      annotations:
+        security.aly.codes/exception-host-path:
+          Repositories and application state remain
+          on Goldenrod's backed-up storage.
     spec:
       automountServiceAccountToken: false
       enableServiceLinks: false
