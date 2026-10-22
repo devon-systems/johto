@@ -17,10 +17,18 @@ spec:
       labels:
         app: pocket-id
     spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       automountServiceAccountToken: false
       enableServiceLinks: false
       containers:
         - name: pocket-id
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - NET_RAW
           image: ghcr.io/pocket-id/pocket-id:v2@sha256:f7299b41ed76d1cf46fd5befc7db660eaa12162dc8af2632d5e23fa78708266a
           env:
             - name: APP_URL
