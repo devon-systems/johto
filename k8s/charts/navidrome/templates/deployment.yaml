@@ -14,12 +14,20 @@ spec:
       labels:
         app.kubernetes.io/name: navidrome
     spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
       nodeSelector:
         johto.narwhal-snapper-ts.net/workload: media
       securityContext:
+        seccompProfile:
+          type: RuntimeDefault
         fsGroup: 1000
       containers:
         - name: navidrome
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [NET_RAW]
           image: deluan/navidrome:0.64.2@sha256:38dc2727bfcfd5ede290f8ada114fc90368146f265ae4701ddddbcbe2a44ee52
           env:
             - name: ND_ADDRESS
