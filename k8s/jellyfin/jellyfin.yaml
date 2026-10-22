@@ -15,8 +15,7 @@ spec:
       labels:
         app.kubernetes.io/name: jellyfin
       annotations:
-        security.aly.codes/exception-host-path:
-          Media, GPU devices, configuration, and
+        security.aly.codes/exception-host-path: Media, configuration, and
           transcode cache reside on Goldenrod.
     spec:
       automountServiceAccountToken: false
@@ -48,8 +47,10 @@ spec:
             requests:
               cpu: 250m
               memory: 1Gi
+              gpu.intel.com/i915: "1"
             limits:
               memory: 4Gi
+              gpu.intel.com/i915: "1"
           startupProbe:
             httpGet:
               path: /health
@@ -75,8 +76,6 @@ spec:
               mountPath: /media
             - name: backblaze
               mountPath: /backblaze
-            - name: dri
-              mountPath: /dev/dri
       volumes:
         - name: config
           hostPath:
@@ -93,10 +92,6 @@ spec:
         - name: backblaze
           hostPath:
             path: /mnt/Backblaze
-            type: Directory
-        - name: dri
-          hostPath:
-            path: /dev/dri
             type: Directory
 ---
 apiVersion: v1
