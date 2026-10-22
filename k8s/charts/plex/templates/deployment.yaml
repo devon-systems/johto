@@ -19,7 +19,8 @@ spec:
     spec:
       automountServiceAccountToken: false
       enableServiceLinks: false
-      dnsPolicy: ClusterFirst
+      dnsPolicy: ClusterFirstWithHostNet
+      hostNetwork: true
       nodeSelector:
         johto.narwhal-snapper-ts.net/workload: media
       securityContext:
