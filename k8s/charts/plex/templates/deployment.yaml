@@ -19,8 +19,7 @@ spec:
     spec:
       automountServiceAccountToken: false
       enableServiceLinks: false
-      dnsPolicy: ClusterFirstWithHostNet
-      hostNetwork: true
+      dnsPolicy: ClusterFirst
       nodeSelector:
         johto.narwhal-snapper-ts.net/workload: media
       securityContext:
@@ -92,6 +91,18 @@ spec:
               mountPath: /config/Library/Application Support/Plex Media Server/Cache
             - name: plugin-cache
               mountPath: /config/Library/Application Support/Plex Media Server/Plug-in Support/Caches
+            - name: extensions
+              mountPath: /config/Library/Application Support/Plex Media Server/Plug-ins
+              subPath: Plug-ins
+              readOnly: true
+            - name: extensions
+              mountPath: /config/Library/Application Support/Plex Media Server/Scanners/Series
+              subPath: Scanners/Series
+              readOnly: true
+            - name: extensions
+              mountPath: /config/Library/Application Support/Plex Media Server/Scanners/Music
+              subPath: Scanners/Music
+              readOnly: true
             - name: media
               mountPath: /mnt/Media/Anime
               subPath: Anime
@@ -125,6 +136,10 @@ spec:
               subPath: Shows
               readOnly: true
       volumes:
+        - name: extensions
+          hostPath:
+            path: /etc/plex-extensions
+            type: Directory
         - name: runtime
           emptyDir:
             medium: Memory

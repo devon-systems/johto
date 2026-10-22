@@ -3,9 +3,13 @@ kind: Service
 metadata:
   name: plex
 spec:
+  type: NodePort
+  # Preserve direct access on Goldenrod without sharing the host network.
+  externalTrafficPolicy: Local
   selector:
     app.kubernetes.io/name: plex
   ports:
     - name: http
       port: 32400
+      nodePort: 32400
       targetPort: http
