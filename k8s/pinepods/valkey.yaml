@@ -13,12 +13,20 @@ spec:
       labels:
         app: valkey
     spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       automountServiceAccountToken: false
       enableServiceLinks: false
       nodeSelector:
         johto.narwhal-snapper-ts.net/workload: media
       containers:
         - name: valkey
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - NET_RAW
           image: valkey/valkey:9-alpine@sha256:48332870af354a799964c0012ae1194a0bf2bf894eb508f945810596dc2d8d11
           ports:
             - name: valkey

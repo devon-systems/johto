@@ -13,6 +13,7 @@ spec:
       labels:
         app: pinepods
     spec:
+      automountServiceAccountToken: false
       enableServiceLinks: false
       nodeSelector:
         johto.narwhal-snapper-ts.net/workload: media
@@ -22,6 +23,11 @@ spec:
           type: RuntimeDefault
       containers:
         - name: pinepods
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - NET_RAW
           image: madeofpendletonwool/pinepods:0.9.0@sha256:ebc258bb0c62cdb69e5fb726b247c885dac19b50d06fed68fa8d37197b88ace4
           envFrom:
             - secretRef:
