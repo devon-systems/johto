@@ -24,6 +24,12 @@ spec:
         johto.narwhal-snapper-ts.net/workload: media
       containers:
         - name: tautulli
+          # The upstream entrypoint drops privileges but does not set a private umask.
+          command: [/bin/sh, -ec]
+          args:
+            - |-
+              umask 077
+              exec /app/start.sh python /app/Tautulli.py --datadir /config
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
