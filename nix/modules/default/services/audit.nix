@@ -1,5 +1,7 @@
 _: {
-  flake.nixosModules.default = {
+  flake.nixosModules.default = {lib, ...}: {
+    users.groups.audit = {};
+    systemd.services.alloy.serviceConfig.SupplementaryGroups = ["audit"];
     security.audit = {
       enable = true;
       backlogLimit = 8192;
@@ -14,6 +16,7 @@ _: {
     security.auditd = {
       enable = true;
       settings = {
+        log_group = "audit";
         max_log_file = 64;
         num_logs = 16;
         max_log_file_action = "ROTATE";
@@ -22,6 +25,10 @@ _: {
         disk_full_action = "SUSPEND";
         disk_error_action = "SYSLOG";
       };
+    };
+    systemd.services.auditd.serviceConfig = {
+      Group = "audit";
+      LogsDirectoryMode = lib.mkForce "0750";
     };
     environment.etc."alloy/linux-audit.alloy".text = ''
       local.file_match "linux_audit" {
