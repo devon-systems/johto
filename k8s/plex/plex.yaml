@@ -4,7 +4,7 @@ metadata:
   name: plex
   namespace: flux-system
 spec:
-  suspend: false
+  suspend: true
   chart:
     spec:
       chart: ./k8s/charts/plex

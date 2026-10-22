@@ -4,6 +4,7 @@ metadata:
   name: navidrome
   namespace: flux-system
 spec:
+  suspend: true
   chart:
     spec:
       chart: ./k8s/charts/navidrome
