@@ -31,21 +31,25 @@ columns = 4
 [[sections.services]]
 name = "Immich"
 url = "https://immich.cute.haus"
+healthUrl = "http://immich.immich.svc:2283/api/server/ping"
 icon = "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/immich.png"
 
 [[sections.services]]
 name = "Nextcloud"
 url = "https://nextcloud.cute.haus"
+healthUrl = "http://nextcloud.nextcloud.svc/status.php"
 icon = "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/nextcloud.png"
 
 [[sections.services]]
 name = "Paperless"
 url = "https://paperless.cute.haus"
+healthUrl = "http://paperless.paperless.svc/"
 icon = "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/paperless-ngx.png"
 
 [[sections.services]]
 name = "Plex"
 url = "https://plex.cute.haus"
+healthUrl = "http://plex.plex.svc:32400/identity"
 icon = "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/plex.png"
 
 [[sections.services]]
@@ -57,6 +61,7 @@ icon = "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/jellyfin.png"
 [[sections.services]]
 name = "Uptime Kuma"
 url = "https://kuma.cute.haus"
+healthUrl = "http://uptime-kuma.default.svc/"
 icon = "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/uptime-kuma.png"
 
 [[sections.services]]
