@@ -24,23 +24,39 @@ spec:
       nodeSelector:
         johto.narwhal-snapper-ts.net/workload: media
       securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
         seccompProfile:
           type: RuntimeDefault
-        supplementalGroups: [44]
+        supplementalGroups: [26, 303]
+      initContainers:
+        - name: prepare-runtime
+          image: lscr.io/linuxserver/plex:1.43.5.11029-6bf8af3f0-ls329@sha256:8f655bad7dcbc5398a78f70a5af12600b4ed3424f901566ed1eaa6710e9e2334
+          command: [/bin/sh, -ec]
+          # s6 requires /run to be owned by its user, not only group-writable.
+          args: [mkdir -p /runtime/run && chmod 0755 /runtime/run]
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          volumeMounts:
+            - name: runtime
+              mountPath: /runtime
       containers:
         - name: plex
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
-              drop: [NET_RAW]
-          image: plexinc/pms-docker:1.43.3.10861-07dfddaeb@sha256:5bc1d13f48da6366f46aaf2a3ce1a6292897eadc1f8efcbbd7321d30e94f2ed4
+              drop: [ALL]
+          image: lscr.io/linuxserver/plex:1.43.5.11029-6bf8af3f0-ls329@sha256:8f655bad7dcbc5398a78f70a5af12600b4ed3424f901566ed1eaa6710e9e2334
           env:
-            - name: ADVERTISE_IP
-              value: https://plex.cute.haus:443
-            - name: PLEX_GID
-              value: "1000"
-            - name: PLEX_UID
-              value: "1000"
+            - name: VERSION
+              value: docker
+            - name: TMPDIR
+              value: /tmp/plex
             - name: TZ
               value: America/New_York
           ports:
@@ -50,8 +66,10 @@ spec:
             requests:
               cpu: 100m
               memory: 512Mi
+              gpu.intel.com/i915: "1"
             limits:
               memory: 4Gi
+              gpu.intel.com/i915: "1"
           startupProbe:
             tcpSocket: {port: http}
             failureThreshold: 60
@@ -61,6 +79,13 @@ spec:
           readinessProbe:
             tcpSocket: {port: http}
           volumeMounts:
+            - name: runtime
+              mountPath: /run
+              subPath: run
+            - name: tmp
+              mountPath: /tmp
+            - name: transcode
+              mountPath: /transcode
             - name: config
               mountPath: /config
             - name: cache
@@ -71,9 +96,15 @@ spec:
               mountPath: /mnt/Media
             - name: backblaze
               mountPath: /mnt/Backblaze
-            - name: dri
-              mountPath: /dev/dri
       volumes:
+        - name: runtime
+          emptyDir:
+            medium: Memory
+            sizeLimit: 64Mi
+        - name: tmp
+          emptyDir: {}
+        - name: transcode
+          emptyDir: {}
         - name: config
           hostPath:
             path: /mnt/Data/apps/plex
@@ -93,8 +124,4 @@ spec:
         - name: backblaze
           hostPath:
             path: /mnt/Backblaze
-            type: Directory
-        - name: dri
-          hostPath:
-            path: /dev/dri
             type: Directory
