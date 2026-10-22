@@ -50,11 +50,20 @@ spec:
       labels:
         app: valkey
     spec:
+      automountServiceAccountToken: false
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       enableServiceLinks: false
       nodeSelector:
         johto.narwhal-snapper-ts.net/workload: media
       containers:
         - name: valkey
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - NET_RAW
           image: valkey/valkey:9-alpine@sha256:48332870af354a799964c0012ae1194a0bf2bf894eb508f945810596dc2d8d11
           args:
             [
@@ -99,11 +108,20 @@ spec:
       labels:
         app: machine-learning
     spec:
+      automountServiceAccountToken: false
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       enableServiceLinks: false
       nodeSelector:
         johto.narwhal-snapper-ts.net/workload: media
       containers:
         - name: machine-learning
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - NET_RAW
           image: ghcr.io/immich-app/immich-machine-learning:v3.3.4-openvino@sha256:8f1a6138665baa9516e47c47ce45acdb16b4a9817cc3a4c7a833913c46782095
           env:
             - { name: MACHINE_LEARNING_CACHE_FOLDER, value: /cache }
@@ -155,11 +173,20 @@ spec:
       labels:
         app: immich
     spec:
+      automountServiceAccountToken: false
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       enableServiceLinks: false
       nodeSelector:
         johto.narwhal-snapper-ts.net/workload: media
       containers:
         - name: immich
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - NET_RAW
           image: ghcr.io/immich-app/immich-server:v3.3.4@sha256:f6475c58b07a8d89ec845aa8782731d36656c3c17d943e0a101dc6ed99a2e53f
           env:
             - { name: DB_DATABASE_NAME, value: immich }
