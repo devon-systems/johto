@@ -1,7 +1,32 @@
 _: {
-  flake.nixosModules.goldenrod = _: let
+  flake.nixosModules.goldenrod = {pkgs, ...}: let
     logs = "/mnt/Data/apps/plex/Library/Application Support/Plex Media Server/Logs";
+    hama = pkgs.fetchFromGitHub {
+      owner = "ZeroQI";
+      repo = "Hama.bundle";
+      rev = "2250fabb1dbc6d3209baa204e308b2d0fb239029";
+      hash = "sha256-hK4QZbl5ddHnMAE30RB8wIWQ4edvD09mgC10+Fy/R/I=";
+    };
+    audnexus = pkgs.fetchFromGitHub {
+      owner = "djdembeck";
+      repo = "Audnexus.bundle";
+      rev = "4d204bf387e1a6ae844ebd2cc73b61db7540c11e";
+      hash = "sha256-n+iKjhr1qAhSOfPiugUICmy3jieMc2VYycBP3V9bs7U=";
+    };
+    absolute = pkgs.fetchFromGitHub {
+      owner = "ZeroQI";
+      repo = "Absolute-Series-Scanner";
+      rev = "a72a58f764d1884a3007811576440a6cf3b7f21a";
+      hash = "sha256-u3MMV5YAKwfQd6XtU3XaDkxY8Hg0iZ9uWzS7Gmkx/E0=";
+    };
+    extensions = pkgs.runCommand "plex-extensions" {} ''
+      mkdir -p "$out/Plug-ins" "$out/Scanners/Series" "$out/Scanners/Music"
+      cp -R ${hama} "$out/Plug-ins/Hama.bundle"
+      cp -R ${audnexus} "$out/Plug-ins/Audnexus.bundle"
+      cp '${absolute}/Scanners/Series/Absolute Series Scanner.py' "$out/Scanners/Series/"
+    '';
   in {
+    environment.etc."plex-extensions".source = extensions;
     networking.firewall = {
       allowedTCPPorts = [32400];
       allowedUDPPorts = [1900 32410 32412 32413 32414];
@@ -20,7 +45,7 @@ _: {
       loki.source.file "plex" {
         targets = local.file_match.plex.targets
         forward_to = [loki.process.plex.receiver]
-        tail_from_end = true
+        tail_from_end = false
       }
       loki.process "plex" {
         stage.multiline {
