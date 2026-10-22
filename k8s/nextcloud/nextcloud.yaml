@@ -120,6 +120,8 @@ spec:
               value: "true"
             - name: aliasgroup1
               value: http://nextcloud\.nextcloud\.svc:80
+            - name: content_security_policy
+              value: "frame-ancestors https://nextcloud.cute.haus;"
             - name: extra_params
               value: --o:ssl.enable=false --o:ssl.termination=true
             - name: server_name
