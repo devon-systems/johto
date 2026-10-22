@@ -81,55 +81,7 @@ spec:
                 cp -a /legacy/. /config/
               fi
 
-              {{- if eq $legacyConfigFormat "xml" }}
-              config_file=/config/config.xml
-              sed -i '/<Postgres\(Host\|Port\|User\|Password\|MainDb\|LogDb\)>/d' "$config_file"
-              sed -i "/<Config>/a\\  <PostgresLogDb>{{ .Values.database.logDatabase }}</PostgresLogDb>\\n  <PostgresMainDb>{{ $mainDatabase }}</PostgresMainDb>\\n  <PostgresPassword>${POSTGRES_PASSWORD}</PostgresPassword>\\n  <PostgresUser>${POSTGRES_USER}</PostgresUser>\\n  <PostgresPort>${POSTGRES_PORT}</PostgresPort>\\n  <PostgresHost>${POSTGRES_HOST}</PostgresHost>" "$config_file"
-              {{- else if eq $legacyConfigFormat "yaml" }}
-              config_file=/config/config/config.yaml
-              awk -v database="{{ $mainDatabase }}" -v host="$POSTGRES_HOST" -v password="$POSTGRES_PASSWORD" -v port="$POSTGRES_PORT" -v user="$POSTGRES_USER" '
-                /^postgresql:/ {
-                  print "postgresql:"
-                  print "  database: \047" database "\047"
-                  print "  enabled: true"
-                  print "  host: \047" host "\047"
-                  print "  password: \047" password "\047"
-                  print "  port: " port
-                  print "  username: \047" user "\047"
-                  in_postgresql = 1
-                  next
-                }
-                in_postgresql && /^[^[:space:]]/ { in_postgresql = 0 }
-                !in_postgresql { print }
-              ' "$config_file" > "$config_file.next"
-              mv "$config_file.next" "$config_file"
-              {{- else }}
-              echo "Unsupported legacy config format: {{ $legacyConfigFormat }}" >&2
-              exit 1
-              {{- end }}
-
               chown -R 911:911 /config
-          env:
-            - name: POSTGRES_HOST
-              valueFrom:
-                secretKeyRef:
-                  key: host
-                  name: {{ $databaseSecretName }}
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  key: password
-                  name: {{ $databaseSecretName }}
-            - name: POSTGRES_PORT
-              valueFrom:
-                secretKeyRef:
-                  key: port
-                  name: {{ $databaseSecretName }}
-            - name: POSTGRES_USER
-              valueFrom:
-                secretKeyRef:
-                  key: username
-                  name: {{ $databaseSecretName }}
           volumeMounts:
             - name: config
               mountPath: /config
@@ -176,7 +128,7 @@ spec:
               value: America/New_York
             - name: UMASK
               value: "002"
-            {{- if .Values.database.environment }}
+            {{- if eq $name "bazarr" }}
             - name: POSTGRES_ENABLED
               value: "true"
             - name: POSTGRES_DATABASE
@@ -201,6 +153,31 @@ spec:
                 secretKeyRef:
                   key: username
                   name: {{ $databaseSecretName }}
+            {{- else }}
+            - name: {{ $name | upper }}__POSTGRES__HOST
+              valueFrom:
+                secretKeyRef:
+                  key: host
+                  name: {{ $databaseSecretName }}
+            - name: {{ $name | upper }}__POSTGRES__PORT
+              valueFrom:
+                secretKeyRef:
+                  key: port
+                  name: {{ $databaseSecretName }}
+            - name: {{ $name | upper }}__POSTGRES__USER
+              valueFrom:
+                secretKeyRef:
+                  key: username
+                  name: {{ $databaseSecretName }}
+            - name: {{ $name | upper }}__POSTGRES__PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: {{ $databaseSecretName }}
+            - name: {{ $name | upper }}__POSTGRES__MAINDB
+              value: {{ $mainDatabase | quote }}
+            - name: {{ $name | upper }}__POSTGRES__LOGDB
+              value: {{ .Values.database.logDatabase | quote }}
             {{- end }}
           ports:
             - containerPort: {{ $port }}

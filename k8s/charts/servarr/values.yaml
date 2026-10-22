@@ -8,7 +8,6 @@ database:
   secretName: pg-shared-app
   mainDatabase: ""
   logDatabase: ""
-  environment: false
 
 legacyConfig:
   path: ""

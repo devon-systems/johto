@@ -22,7 +22,6 @@ spec:
       port: 6767
       image: lscr.io/linuxserver/bazarr@sha256:946dc8c5bb5331418eac60050cf40a63cb8f66ac039841dda493870e3559799c
     database:
-      environment: true
       mainDatabase: bazarr
     legacyConfig:
       format: yaml
