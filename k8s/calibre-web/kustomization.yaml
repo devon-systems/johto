@@ -4,9 +4,6 @@ namespace: calibre-web
 resources:
   - network-policy.yaml
   - workload.yaml
-patches:
-  - path: lan-access.yaml
-  - path: conversion.yaml
 configMapGenerator:
   - name: calibre-web-init
     files:
