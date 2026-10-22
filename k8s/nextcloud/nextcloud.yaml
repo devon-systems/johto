@@ -50,11 +50,20 @@ spec:
       labels:
         app: valkey
     spec:
+      automountServiceAccountToken: false
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       enableServiceLinks: false
       nodeSelector:
         johto.narwhal-snapper-ts.net/workload: media
       containers:
         - name: valkey
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - NET_RAW
           image: valkey/valkey:9-alpine@sha256:48332870af354a799964c0012ae1194a0bf2bf894eb508f945810596dc2d8d11
           args:
             [
@@ -99,6 +108,7 @@ spec:
       labels:
         app: collabora
     spec:
+      automountServiceAccountToken: false
       enableServiceLinks: false
       nodeSelector:
         johto.narwhal-snapper-ts.net/workload: media
@@ -151,13 +161,21 @@ spec:
       labels:
         app: nextcloud
     spec:
+      automountServiceAccountToken: false
       enableServiceLinks: false
       nodeSelector:
         johto.narwhal-snapper-ts.net/workload: media
       securityContext:
+        seccompProfile:
+          type: RuntimeDefault
         fsGroup: 33
       containers:
         - name: nextcloud
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - NET_RAW
           image: docker.io/library/nextcloud:35-apache@sha256:3f05f4d5eded9d3d029e617926500645cca6344710364737a374088f6811095a
           command: [/bin/sh, -ec]
           args:
@@ -259,6 +277,10 @@ spec:
             - { name: REDIS_HOST, value: valkey }
             - { name: REDIS_HOST_PORT, value: "6379" }
           securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - NET_RAW
             runAsUser: 33
             runAsGroup: 33
           resources:
