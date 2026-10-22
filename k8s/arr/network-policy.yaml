@@ -1,0 +1,287 @@
+# qBittorrent deliberately keeps host networking and is excluded from these policies.
+# Olivine scrapes exporters from its WireGuard or Flannel host address.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: arr-applications
+  namespace: arr
+spec:
+  podSelector:
+    matchExpressions:
+      - key: app.kubernetes.io/name
+        operator: NotIn
+        values:
+          - qbittorrent
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: tailscale
+          podSelector:
+            matchLabels:
+              tailscale.com/managed: "true"
+              tailscale.com/parent-resource-type: proxygroup
+              tailscale.com/parent-resource: private-ingress
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: websites
+          podSelector:
+            matchLabels:
+              app: watsup
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: default
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: uptime-kuma
+      ports:
+        - protocol: TCP
+          port: 4533
+        - protocol: TCP
+          port: 5055
+        - protocol: TCP
+          port: 6767
+        - protocol: TCP
+          port: 7878
+        - protocol: TCP
+          port: 8686
+        - protocol: TCP
+          port: 8989
+        - protocol: TCP
+          port: 9696
+    - from:
+        - ipBlock:
+            cidr: 10.254.2.2/32
+        - ipBlock:
+            cidr: 10.42.0.0/32
+      ports:
+        - protocol: TCP
+          port: 9708
+        - protocol: TCP
+          port: 9709
+        - protocol: TCP
+          port: 9710
+        - protocol: TCP
+          port: 9711
+        - protocol: TCP
+          port: 9712
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except:
+              - 0.0.0.0/8
+              - 10.0.0.0/8
+              - 100.64.0.0/10
+              - 127.0.0.0/8
+              - 169.254.0.0/16
+              - 172.16.0.0/12
+              - 192.0.0.0/24
+              - 192.0.2.0/24
+              - 192.168.0.0/16
+              - 198.18.0.0/15
+              - 198.51.100.0/24
+              - 203.0.113.0/24
+              - 224.0.0.0/4
+              - 240.0.0.0/4
+              - 40.160.83.152/32
+              - 51.81.32.154/32
+              - 136.55.153.136/32
+      ports:
+        - protocol: TCP
+          port: 80
+        - protocol: TCP
+          port: 443
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: servarr-integrations
+  namespace: arr
+spec:
+  podSelector:
+    matchExpressions:
+      - key: app.kubernetes.io/name
+        operator: In
+        values:
+          - bazarr
+          - lidarr
+          - prowlarr
+          - radarr
+          - sonarr
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: arr
+          podSelector:
+            matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                  - bazarr
+                  - lidarr
+                  - prowlarr
+                  - radarr
+                  - sonarr
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ombi
+          podSelector:
+            matchLabels:
+              app: ombi
+      ports:
+        - protocol: TCP
+          port: 6767
+        - protocol: TCP
+          port: 7878
+        - protocol: TCP
+          port: 8686
+        - protocol: TCP
+          port: 8989
+        - protocol: TCP
+          port: 9696
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: arr
+          podSelector:
+            matchLabels:
+              app: seerr
+      ports:
+        - protocol: TCP
+          port: 7878
+        - protocol: TCP
+          port: 8989
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: arr
+          podSelector:
+            matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                  - bazarr
+                  - lidarr
+                  - prowlarr
+                  - radarr
+                  - sonarr
+      ports:
+        - protocol: TCP
+          port: 6767
+        - protocol: TCP
+          port: 7878
+        - protocol: TCP
+          port: 8686
+        - protocol: TCP
+          port: 8989
+        - protocol: TCP
+          port: 9696
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: cnpg-system
+          podSelector:
+            matchLabels:
+              cnpg.io/cluster: pg-shared
+      ports:
+        - protocol: TCP
+          port: 5432
+    - to:
+        - ipBlock:
+            cidr: 10.254.2.3/32
+        - ipBlock:
+            cidr: 192.168.1.138/32
+      ports:
+        - protocol: TCP
+          port: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: media-server-connections
+  namespace: arr
+spec:
+  podSelector:
+    matchExpressions:
+      - key: app.kubernetes.io/name
+        operator: NotIn
+        values:
+          - qbittorrent
+          - navidrome
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: plex
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: plex
+        - ipBlock:
+            cidr: 10.254.2.3/32
+      ports:
+        - protocol: TCP
+          port: 32400
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: jellyfin
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: jellyfin
+      ports:
+        - protocol: TCP
+          port: 8096
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: seerr-requests
+  namespace: arr
+spec:
+  podSelector:
+    matchLabels:
+      app: seerr
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: arr
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: sonarr
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: arr
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: radarr
+      ports:
+        - protocol: TCP
+          port: 7878
+        - protocol: TCP
+          port: 8989
