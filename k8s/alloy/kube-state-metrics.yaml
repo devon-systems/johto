@@ -103,7 +103,8 @@ spec:
               labelsFromPath:
                 name: [metadata, name]
                 exported_namespace: [metadata, namespace]
-              metrics:
+                source_type: [spec, type]
+              metrics: &flux-resource-metrics
                 - name: resource_info
                   help: Flux resource readiness and suspension.
                   each:
@@ -133,28 +134,8 @@ spec:
               labelsFromPath:
                 name: [metadata, name]
                 exported_namespace: [metadata, namespace]
-              metrics:
-                - name: resource_info
-                  help: Flux resource readiness and suspension.
-                  each:
-                    type: Info
-                    info:
-                      labelsFromPath:
-                        ready: [status, conditions, "[type=Ready]", status]
-                        suspended: [spec, suspend]
-                - name: resource_generation
-                  help: Desired generation.
-                  each:
-                    type: Gauge
-                    gauge:
-                      path: [metadata, generation]
-                - name: resource_observed_generation
-                  help: Observed generation of the Ready condition.
-                  each:
-                    type: Gauge
-                    gauge:
-                      path:
-                        [status, conditions, "[type=Ready]", observedGeneration]
+                source_type: [spec, type]
+              metrics: *flux-resource-metrics
             - groupVersionKind:
                 group: source.toolkit.fluxcd.io
                 version: v1
@@ -163,28 +144,8 @@ spec:
               labelsFromPath:
                 name: [metadata, name]
                 exported_namespace: [metadata, namespace]
-              metrics:
-                - name: resource_info
-                  help: Flux resource readiness and suspension.
-                  each:
-                    type: Info
-                    info:
-                      labelsFromPath:
-                        ready: [status, conditions, "[type=Ready]", status]
-                        suspended: [spec, suspend]
-                - name: resource_generation
-                  help: Desired generation.
-                  each:
-                    type: Gauge
-                    gauge:
-                      path: [metadata, generation]
-                - name: resource_observed_generation
-                  help: Observed generation of the Ready condition.
-                  each:
-                    type: Gauge
-                    gauge:
-                      path:
-                        [status, conditions, "[type=Ready]", observedGeneration]
+                source_type: [spec, type]
+              metrics: *flux-resource-metrics
             - groupVersionKind:
                 group: kustomize.toolkit.fluxcd.io
                 version: v1
@@ -193,28 +154,8 @@ spec:
               labelsFromPath:
                 name: [metadata, name]
                 exported_namespace: [metadata, namespace]
-              metrics:
-                - name: resource_info
-                  help: Flux resource readiness and suspension.
-                  each:
-                    type: Info
-                    info:
-                      labelsFromPath:
-                        ready: [status, conditions, "[type=Ready]", status]
-                        suspended: [spec, suspend]
-                - name: resource_generation
-                  help: Desired generation.
-                  each:
-                    type: Gauge
-                    gauge:
-                      path: [metadata, generation]
-                - name: resource_observed_generation
-                  help: Observed generation of the Ready condition.
-                  each:
-                    type: Gauge
-                    gauge:
-                      path:
-                        [status, conditions, "[type=Ready]", observedGeneration]
+                source_type: [spec, type]
+              metrics: *flux-resource-metrics
             - groupVersionKind:
                 group: helm.toolkit.fluxcd.io
                 version: v2
@@ -223,25 +164,5 @@ spec:
               labelsFromPath:
                 name: [metadata, name]
                 exported_namespace: [metadata, namespace]
-              metrics:
-                - name: resource_info
-                  help: Flux resource readiness and suspension.
-                  each:
-                    type: Info
-                    info:
-                      labelsFromPath:
-                        ready: [status, conditions, "[type=Ready]", status]
-                        suspended: [spec, suspend]
-                - name: resource_generation
-                  help: Desired generation.
-                  each:
-                    type: Gauge
-                    gauge:
-                      path: [metadata, generation]
-                - name: resource_observed_generation
-                  help: Observed generation of the Ready condition.
-                  each:
-                    type: Gauge
-                    gauge:
-                      path:
-                        [status, conditions, "[type=Ready]", observedGeneration]
+                source_type: [spec, type]
+              metrics: *flux-resource-metrics

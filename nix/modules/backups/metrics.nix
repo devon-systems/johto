@@ -26,14 +26,15 @@ _: {
         completed=NaN
         previous=NaN
         if [ -f "$output" ]; then
-          previous=$(awk '/^johto_backup_last_success_timestamp_seconds\{/ {print $NF}' "$output")
+          previous=$(awk '/^[a-z]+_backup_last_success_timestamp_seconds\{/ {print $NF}' "$output")
         fi
         if [ "$action" = seed ]; then
           if [ -f "$pending" ]; then
             success=0
             completed=$(date +%s)
           elif [ -f "$output" ]; then
-            exit 0
+            completed=$(awk '/^[a-z]+_backup_last_completion_timestamp_seconds\{/ {print $NF}' "$output")
+            success=$(awk '/^[a-z]+_backup_last_run_success\{/ {print $NF}' "$output")
           elif [ "$(systemctl show "restic-backups-$job" -p ExecMainExitTimestampMonotonic --value)" != 0 ]; then
             state=$(systemctl show "restic-backups-$job" -p ActiveState --value)
             if [ "$state" = inactive ] || [ "$state" = failed ]; then
@@ -57,10 +58,10 @@ _: {
         temporary=$(mktemp "${directory}/$job.XXXXXX")
         trap 'rm -f "$temporary"' EXIT
         {
-          printf 'johto_backup_job_info{backup="%s"} 1\n' "$job"
-          printf 'johto_backup_last_completion_timestamp_seconds{backup="%s"} %s\n' "$job" "$completed"
-          printf 'johto_backup_last_success_timestamp_seconds{backup="%s"} %s\n' "$job" "$previous"
-          printf 'johto_backup_last_run_success{backup="%s"} %s\n' "$job" "$success"
+          printf 'restic_backup_job_info{backup="%s",scope="system",owner="root"} 1\n' "$job"
+          printf 'restic_backup_last_completion_timestamp_seconds{backup="%s",scope="system",owner="root"} %s\n' "$job" "$completed"
+          printf 'restic_backup_last_success_timestamp_seconds{backup="%s",scope="system",owner="root"} %s\n' "$job" "$previous"
+          printf 'restic_backup_last_run_success{backup="%s",scope="system",owner="root"} %s\n' "$job" "$success"
         } > "$temporary"
         chmod 644 "$temporary"
         mv "$temporary" "$output"

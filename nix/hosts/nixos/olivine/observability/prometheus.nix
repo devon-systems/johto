@@ -9,13 +9,28 @@ _: {
         scrape_interval = "30s";
         evaluation_interval = "30s";
       };
-      scrapeConfigs = [
+      scrapeConfigs = map (scrape:
+        scrape
+        // {
+          relabel_configs =
+            (scrape.relabel_configs or [])
+            ++ [
+              {
+                target_label = "cluster";
+                replacement = "johto";
+              }
+            ];
+        }) [
         {
           job_name = "loki";
           static_configs = [
             {
               targets = ["127.0.0.1:3030"];
-              labels.instance = "olivine";
+              labels = {
+                instance = "olivine";
+                host = "olivine";
+                os = "linux";
+              };
             }
           ];
         }
@@ -24,7 +39,11 @@ _: {
           static_configs = [
             {
               targets = ["127.0.0.1:3020"];
-              labels.instance = "olivine";
+              labels = {
+                instance = "olivine";
+                host = "olivine";
+                os = "linux";
+              };
             }
           ];
         }
@@ -51,7 +70,11 @@ _: {
           static_configs = [
             {
               targets = ["goldenrod.johto:9633"];
-              labels.instance = "goldenrod";
+              labels = {
+                instance = "goldenrod";
+                host = "goldenrod";
+                os = "linux";
+              };
             }
           ];
         }
@@ -64,11 +87,19 @@ _: {
           static_configs = [
             {
               targets = ["goldenrod.johto:3021"];
-              labels.instance = "goldenrod";
+              labels = {
+                instance = "goldenrod";
+                host = "goldenrod";
+                os = "linux";
+              };
             }
             {
               targets = ["olivine.johto:3021"];
-              labels.instance = "olivine";
+              labels = {
+                instance = "olivine";
+                host = "olivine";
+                os = "linux";
+              };
             }
           ];
         }
