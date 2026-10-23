@@ -5,88 +5,44 @@ _: {
     pkgs,
     ...
   }: let
-    jobs = builtins.attrNames config.services.restic.backups;
     directory = "/var/lib/johto-metrics";
+    jobs = builtins.attrNames config.services.restic.backups;
     reporter = pkgs.writeShellApplication {
       name = "johto-backup-metrics";
-      runtimeInputs = [pkgs.coreutils pkgs.util-linux pkgs.gawk pkgs.systemd];
-      text = ''
-        job="$1"
-        action="''${2:-complete}"
-        mkdir -p ${directory}
-        exec 9>"${directory}/$job.lock"
-        flock 9
-        output="${directory}/$job.prom"
-        pending="${directory}/$job.running"
-        if [ "$action" = start ]; then
-          touch "$pending"
-          exit 0
-        fi
-        success=NaN
-        completed=NaN
-        previous=NaN
-        if [ -f "$output" ]; then
-          previous=$(awk '/^[a-z]+_backup_last_success_timestamp_seconds\{/ {print $NF}' "$output")
-        fi
-        if [ "$action" = seed ]; then
-          if [ -f "$pending" ]; then
-            success=0
-            completed=$(date +%s)
-          elif [ -f "$output" ]; then
-            completed=$(awk '/^[a-z]+_backup_last_completion_timestamp_seconds\{/ {print $NF}' "$output")
-            success=$(awk '/^[a-z]+_backup_last_run_success\{/ {print $NF}' "$output")
-          elif [ "$(systemctl show "restic-backups-$job" -p ExecMainExitTimestampMonotonic --value)" != 0 ]; then
-            state=$(systemctl show "restic-backups-$job" -p ActiveState --value)
-            if [ "$state" = inactive ] || [ "$state" = failed ]; then
-              completed=$(date -d "$(systemctl show "restic-backups-$job" -p ExecMainExitTimestamp --value)" +%s)
-              success=0
-              if [ "$(systemctl show "restic-backups-$job" -p Result --value)" = success ] &&
-                 [ "$(systemctl show "restic-backups-$job" -p ExecMainCode --value)" = 1 ] &&
-                 [ "$(systemctl show "restic-backups-$job" -p ExecMainStatus --value)" = 0 ]; then
-                success=1
-              fi
-            fi
-          fi
-        else
-          completed=$(date +%s)
-          success=0
-          if [ "''${SERVICE_RESULT:-}" = success ] && [ "''${EXIT_CODE:-}" = exited ] && [ "''${EXIT_STATUS:-}" = 0 ]; then
-            success=1
-          fi
-        fi
-        if [ "$success" = 1 ]; then previous="$completed"; fi
-        temporary=$(mktemp "${directory}/$job.XXXXXX")
-        trap 'rm -f "$temporary"' EXIT
-        {
-          printf 'restic_backup_job_info{backup="%s",scope="system",owner="root"} 1\n' "$job"
-          printf 'restic_backup_last_completion_timestamp_seconds{backup="%s",scope="system",owner="root"} %s\n' "$job" "$completed"
-          printf 'restic_backup_last_success_timestamp_seconds{backup="%s",scope="system",owner="root"} %s\n' "$job" "$previous"
-          printf 'restic_backup_last_run_success{backup="%s",scope="system",owner="root"} %s\n' "$job" "$success"
-        } > "$temporary"
-        chmod 644 "$temporary"
-        mv "$temporary" "$output"
-        rm -f "$pending"
-      '';
+      runtimeInputs = [pkgs.python3 pkgs.systemd pkgs.coreutils];
+      text = ''exec python3 ${../../../scripts/backup-metrics.py} "$@"'';
     };
+    command = "${lib.getExe reporter} --directory ${directory}";
   in {
-    systemd.services =
-      lib.listToAttrs (map (job: {
-          name = "restic-backups-${job}";
-          value.serviceConfig = {
-            ExecStartPre = lib.mkBefore ["-${lib.getExe reporter} ${lib.escapeShellArg job} start"];
-            ExecStopPost = lib.mkAfter ["-${lib.getExe reporter} ${lib.escapeShellArg job}"];
+    systemd.services = lib.mkMerge [
+      (lib.mapAttrs' (job: _:
+        lib.nameValuePair "restic-backups-${job}" {
+          onSuccess = ["johto-backup-metrics-${job}.service"];
+          onFailure = ["johto-backup-metrics-${job}.service"];
+          serviceConfig.ExecStartPre = lib.mkBefore ["-${command} --start ${lib.escapeShellArg job}"];
+        })
+      config.services.restic.backups)
+      (lib.listToAttrs (map (job:
+        lib.nameValuePair "johto-backup-metrics-${job}" {
+          description = "Publish completed backup result for ${job}";
+          serviceConfig = {
+            Type = "oneshot";
+            ExecStart = "${command} ${lib.escapeShellArg job}";
           };
         })
-        jobs)
-      // {
+      jobs))
+      {
         johto-backup-metrics-seed = {
-          description = "Seed backup inventory and completed systemd results";
+          description = "Initialize backup inventory and recover interrupted results";
           wantedBy = ["multi-user.target"];
           after = ["systemd-tmpfiles-setup.service"];
-          before = map (job: "restic-backups-${job}.service") jobs;
-          serviceConfig.Type = "oneshot";
-          script = lib.concatMapStringsSep "\n" (job: "${lib.getExe reporter} ${lib.escapeShellArg job} seed || true") jobs;
+          before = ["alloy.service"] ++ map (job: "restic-backups-${job}.service") jobs;
+          serviceConfig = {
+            Type = "oneshot";
+            ExecStart = "${command} --seed ${lib.escapeShellArgs jobs}";
+          };
         };
-      };
+      }
+    ];
   };
 }
