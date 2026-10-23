@@ -1,6 +1,6 @@
 _: {
   flake.nixosModules.olivine = {config, ...}: let
-    metricsBackup = {
+    telemetryBackup = {
       name,
       paths,
     }: {
@@ -10,7 +10,7 @@ _: {
       initialize = true;
       passwordFile = config.sops.secrets.restic-password.path;
       rcloneConfigFile = config.sops.secrets.rclone-b2.path;
-      pruneOpts = ["--keep-daily 3" "--keep-weekly 2"];
+      pruneOpts = ["--keep-daily 7" "--keep-weekly 4" "--keep-monthly 12"];
       timerConfig = {
         OnCalendar = "daily";
         Persistent = true;
@@ -19,11 +19,11 @@ _: {
     };
   in {
     services.restic.backups = {
-      loki = metricsBackup {
+      loki = telemetryBackup {
         name = "loki";
         paths = ["/var/lib/loki"];
       };
-      prometheus = metricsBackup {
+      prometheus = telemetryBackup {
         name = "prometheus";
         paths = ["/var/lib/prometheus2"];
       };
