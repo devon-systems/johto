@@ -129,7 +129,7 @@ _: {
           "--cleanup-cache"
           "--compression max"
           "--no-scan"
-          "--exclude=/mnt/Data/apps/plex/Library/Application Support/Plex Media Server/Plug-in Support/Databases"
+          "--exclude=\"/mnt/Data/apps/plex/Library/Application Support/Plex Media Server/Plug-in Support/Databases\""
         ];
       };
 
