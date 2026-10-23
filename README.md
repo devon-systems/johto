@@ -9,10 +9,10 @@ For my personal nix flake, check out [hoenn](https://github.com/alyraffauf/hoenn
 
 ## Architecture
 
-| Host        | Role                                                                                                    |
-| ----------- | ------------------------------------------------------------------------------------------------------- |
-| `olivine`   | k3s server and control plane, public ingress workloads, private DNS, and etcd backups                   |
-| `goldenrod` | k3s worker for media workloads, persistent storage, NFS, Garage, observability, and application backups |
+| Host        | Role                                                                                                 |
+| ----------- | ---------------------------------------------------------------------------------------------------- |
+| `olivine`   | k3s server and control plane, public ingress workloads, private DNS, observability, and etcd backups |
+| `goldenrod` | k3s worker for media workloads, persistent storage, NFS, Garage, and application backups             |
 
 The nodes communicate over a dedicated WireGuard network. Tailscale provides
 private service access, while public services enter through Olivine. Flux
@@ -21,6 +21,9 @@ reconciles Kubernetes resources from the `master` branch.
 The cluster runs a mix of personal cloud, media, and operations services,
 including Immich, Nextcloud, Paperless, Pocket ID, Plex, Jellyfin, the Servarr
 stack, CloudNativePG, Prometheus, Loki, and Uptime Kuma.
+
+See the shared [observability runbook](https://github.com/devon-systems/infra/blob/master/docs/observability.md)
+to check metrics and logs or troubleshoot missing data.
 
 ## Repository layout
 
