@@ -124,7 +124,7 @@ spec:
         johto.narwhal-snapper-ts.net/workload: media
       containers:
         - name: collabora
-          image: docker.io/collabora/code:latest@sha256:bb8f3c9c5c9016045f25fccb5f0649be94469ebc7c7cc379f3576e470cccf33d
+          image: docker.io/collabora/code:latest@sha256:c7415b963e32eb0986a562583f154d36d3d7a461e1ddfb660a95e87094328acb
           env:
             - name: DONT_GEN_SSL_CERT
               value: "true"
