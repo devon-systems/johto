@@ -176,6 +176,7 @@ spec:
             # the application port so Kubernetes' legacy service variables
             # cannot override it.
             - { name: PAPERLESS_PORT, value: "8000" }
+            - { name: GRANIAN_WORKERS, value: "2" }
             - { name: PAPERLESS_ACCOUNT_DEFAULT_GROUP, value: users }
             - { name: PAPERLESS_ACCOUNT_DEFAULT_HTTP_PROTOCOL, value: https }
             - { name: PAPERLESS_ADMIN_MAIL, value: alyraffauf@fastmail.com }

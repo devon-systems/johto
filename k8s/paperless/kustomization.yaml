@@ -3,7 +3,7 @@ kind: Kustomization
 namespace: paperless
 resources:
   - network-policy.yaml
-  - paperless.yaml
+  - paperless.yaml # Paperless, Valkey, Tika, and Gotenberg.
   - valkey-network-policy.yaml
   - tika-network-policy.yaml
   - gotenberg-network-policy.yaml
