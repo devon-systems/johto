@@ -132,6 +132,12 @@ spec:
           image: ghcr.io/immich-app/immich-machine-learning:v3.3.5-openvino@sha256:e62befdfc8444fdf448ac8b43b6091651e5ce2e05207336ba3b98419c7afdf2d
           env:
             - { name: MACHINE_LEARNING_CACHE_FOLDER, value: /cache }
+            # Keep search ready while other models still expire after inactivity.
+            - {
+                name: MACHINE_LEARNING_PRELOAD__CLIP__TEXTUAL,
+                value: ViT-B-32__openai,
+              }
+            - { name: MACHINE_LEARNING_MODEL_TTL_POLL_S, value: "0" }
           ports:
             - { name: http, containerPort: 3003 }
           resources:
