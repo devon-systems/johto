@@ -6,6 +6,7 @@ resources:
   - nextcloud.yaml
   - valkey-network-policy.yaml
 configMapGenerator:
-  - name: nextcloud-hooks
+  - name: nextcloud-config
     files:
       - configure.sh
+      - apache.conf
