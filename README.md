@@ -62,6 +62,13 @@ reconciliation. These Flux commands explicitly target the `johto` context.
 `just flux-bootstrap <age-key-file> <git-ssh-key-file>` installs SOPS decryption
 and bootstraps the checked-in Flux version.
 
+Upgrade Flux controllers, CRDs, and permissions together. Regenerate the bundle
+with `flux install --version=vX.Y.Z --export > k8s/flux-system/gotk-components.yaml`.
+Keep customizations in `k8s/flux-system/kustomization.yaml`. Renovate's Flux manager
+updates the complete bundle and auto-merges minor and patch releases after CI.
+Its Kubernetes manager skips individual images in this file. `just check-k8s`
+rejects differences from the declared Flux release.
+
 ## Deployment
 
 `blzrd` deploys `olivine` and `goldenrod`. For example:
