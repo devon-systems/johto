@@ -1,95 +1,96 @@
 # johto
 
-Declarative infrastructure for my personal homelab. Johto combines NixOS,
-k3s, Flux, SOPS, and OpenTofu to manage the hosts, applications, networking,
-DNS, and backups that keep the lab running.
+NixOS, k3s, and OpenTofu configuration for my personal homelab. Johto manages
+hosts, applications, private networking, Cloudflare DNS, and backups.
 
-If you're looking for my production services, see [sinnoh](https://github.com/devon-systems/sinnoh).
-For my personal nix flake, check out [hoenn](https://github.com/devon-systems/hoenn).
+See also [Hoenn](https://github.com/devon-systems/hoenn) for personal machines,
+[Sinnoh](https://github.com/devon-systems/sinnoh) for production services, and
+[Kanto](https://github.com/devon-systems/kanto) for shared inference.
 
 ## Architecture
 
-| Host        | Role                                                                                                 |
-| ----------- | ---------------------------------------------------------------------------------------------------- |
-| `olivine`   | k3s server and control plane, public ingress workloads, private DNS, observability, and etcd backups |
-| `goldenrod` | k3s worker for media workloads, persistent storage, NFS, Garage, and application backups             |
+| Host                                               | Role                                                                                 |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| [`olivine`](nix/hosts/nixos/olivine/README.md)     | k3s server, public ingress, private DNS, observability, and etcd backups             |
+| [`goldenrod`](nix/hosts/nixos/goldenrod/README.md) | k3s worker, media services, persistent storage, NFS, Garage, and application backups |
 
-The nodes communicate over a dedicated WireGuard network. Tailscale provides
-private service access, while public services enter through Olivine. Flux
-reconciles Kubernetes resources from the `master` branch.
+The nodes communicate over WireGuard. Tailscale provides private access, and
+public services enter through Olivine. Workloads include Immich, Nextcloud,
+Paperless, Pocket ID, Plex, Jellyfin, Servarr, CloudNativePG, Prometheus, Loki,
+and Uptime Kuma.
 
-The cluster runs a mix of personal cloud, media, and operations services,
-including Immich, Nextcloud, Paperless, Pocket ID, Plex, Jellyfin, the Servarr
-stack, CloudNativePG, Prometheus, Loki, and Uptime Kuma.
-
-See the shared [observability runbook](https://github.com/devon-systems/infra/blob/master/docs/observability.md)
-to check metrics and logs or troubleshoot missing data.
+Comin reconciles host configurations from `master`. Flux reconciles the
+Kubernetes resources in `k8s/flux-system/` from the same branch. OpenTofu
+manages Cloudflare DNS separately.
 
 ## Repository layout
 
 ```text
 nix/
-├── hosts/nixos/       Per-host NixOS configuration and hardware state
-└── modules/           Host defaults and feature modules
-k8s/                  Flux, Kustomize, Helm, and application manifests
+├── hosts/nixos/       Host configuration and hardware state
+└── modules/           Host defaults and shared features
+k8s/                  Flux and application manifests
 secrets/              SOPS-encrypted host secrets
-keys/                 Public SSH keys used to derive age recipients
+keys/                 Public SOPS recipients
 terraform/            OpenTofu configuration for Cloudflare DNS
-scripts/              Repository maintenance utilities
+scripts/              Maintenance tools
+docs/                 Service operations
 ```
 
-`flake.nix` assembles the Nix modules and exposes the `olivine` and `goldenrod`
-NixOS configurations. Kubernetes applications are grouped by
-service under `k8s/`. `k8s/flux-system/` defines their reconciliation order.
+`flake.nix` exposes the `olivine` and `goldenrod` NixOS configurations.
+Kubernetes secrets live in `k8s/secrets/`.
 
-## Work locally
+## Development
 
-Enter the pinned development shell with `nix develop`, or use `direnv allow`
-to load it automatically. From the repository root:
+Enter the pinned development shell with `nix develop`, or run `direnv allow` to
+load it automatically. Then run:
 
 ```sh
 nix fmt
 nix flake check
 ```
 
-Run `just` to list maintenance commands.
+Build each host affected by a Nix change:
 
-The Kubernetes recipes match Hoenn and the other cluster repository. Use
-`just check-k8s` for manifest validation, `just reconcile` to reconcile the Flux
-root, `just reconcile <name>` for a workload, and `just flux-status` to inspect
-reconciliation. These Flux commands explicitly target the `johto` context.
-`just kubeconfig <host> <api-address>` fetches a named administrator kubeconfig.
-`just flux-bootstrap <age-key-file> <git-ssh-key-file>` installs SOPS decryption
-and bootstraps the checked-in Flux version.
+```sh
+nix build .#nixosConfigurations.olivine.config.system.build.toplevel
+nix build .#nixosConfigurations.goldenrod.config.system.build.toplevel
+```
 
-Upgrade Flux controllers, CRDs, and permissions together. Regenerate the bundle
-with `flux install --version=vX.Y.Z --export > k8s/flux-system/gotk-components.yaml`.
-Keep customizations in `k8s/flux-system/kustomization.yaml`. Renovate's Flux manager
-updates the complete bundle and auto-merges minor and patch releases after CI.
-Its Kubernetes manager skips individual images in this file. `just check-k8s`
-rejects differences from the declared Flux release.
+After Kubernetes changes, run `just check-k8s`. For OpenTofu changes, run
+`tofu -chdir=terraform init` on a fresh checkout, then run:
+
+```sh
+tofu -chdir=terraform fmt -check
+tofu -chdir=terraform plan
+```
+
+Run `just` to list the other maintenance commands.
 
 ## Deployment
 
-`blzrd` deploys `olivine` and `goldenrod`. For example:
+Commit and push validated changes, then let Comin and Flux reconcile `master`.
+Run `just flux-status` to inspect the cluster through the `johto` context.
 
-```sh
-blzrd switch olivine
-```
+Review the OpenTofu plan before applying DNS changes. The B2 state backend does
+not lock state, so never run concurrent applies.
 
-`switch` activates the configuration and sets the boot default. `boot` sets
-the boot default without activating it. Without a host name, `blzrd switch`
-deploys every registered node.
-
-Flux deploys Kubernetes workloads from `master`. OpenTofu manages DNS.
+The [observability runbook](https://github.com/devon-systems/infra/blob/master/docs/observability.md)
+explains how to check metrics and logs.
 
 ## Secrets
 
-SOPS encrypts secrets for the recipients in `.sops.yaml`. Public keys live in
-`keys/`. To edit a host secret from the development shell:
+Run `just sops-bootstrap` once per machine to derive your local age key from
+your SSH key. Then edit secrets with SOPS:
 
 ```sh
 just sops-edit tailscale.yaml
+just sops-edit k8s/secrets/pg-shared-b2.sops.yaml
 ```
 
 Direnv loads the encrypted Cloudflare and Backblaze credentials for OpenTofu.
+After changing `keys/`, run `just sops-rekey`. Commit `.sops.yaml` and all
+re-encrypted files together. Never commit decrypted secrets, private keys,
+OpenTofu state, or saved plans.
+
+This project is available under the [MIT License](LICENSE.md).

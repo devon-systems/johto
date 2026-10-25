@@ -1,15 +1,19 @@
-# Tailscale services
+# Expose private services through Tailscale
 
 Johto exposes private web apps through the shared `private-ingress` ProxyGroup.
 Each Ingress creates one Tailscale Service at
 `<hostname>.narwhal-snapper.ts.net`. The proxy runs on Goldenrod and forwards
-to the Kubernetes Service. These are tailnet-only routes. They are unrelated
-to Olivine's public ingress.
+to the Kubernetes Service.
 
-The current examples live in `k8s/private-ingress/`. Start with the one whose
+These routes are available only on the tailnet. They are unrelated to Olivine's
+public ingress.
+
+Examples live in `k8s/private-ingress/`. Start with the one whose
 namespace and service port look most like the app you are adding.
 
 ## Add a service
+
+### Create the Ingress
 
 Create `k8s/private-ingress/<app>.yaml`:
 
@@ -44,6 +48,8 @@ service or a MagicDNS device.
 
 Add the file to `k8s/private-ingress/kustomization.yaml`.
 
+### Allow proxy traffic
+
 If the backend has an ingress NetworkPolicy, allow the application's container
 port from the `tailscale` namespace and pods with these labels:
 
@@ -57,8 +63,10 @@ Use a single peer containing both `namespaceSelector` and `podSelector`, as in
 `k8s/audiobookshelf/network-policy.yaml`. The proxy has no egress allowlist.
 Tailscale discovers its public endpoints without a configured home WAN address.
 
-If you changed a backend policy, stage that file with `git add` before committing.
-Then check the Kubernetes resources and commit the route:
+### Validate and deploy
+
+If you changed a backend policy, stage that file with `git add` before
+committing. Then check the Kubernetes resources and commit the route:
 
 ```sh
 nix run .#check-k8s
@@ -79,7 +87,9 @@ nix run nixpkgs#fluxcd -- --context johto reconcile kustomization private-ingres
 ## Check the route
 
 The operator creates the service, configures the proxy, and obtains the TLS
-certificate. It can take a minute or two after the Ingress appears.
+certificate. This can take a minute or two after the Ingress appears.
+
+Inspect the Ingress and proxy logs:
 
 ```sh
 kubectl --context johto -n <namespace> get ingress <app>-johto -o wide
@@ -89,10 +99,10 @@ kubectl --context johto -n tailscale logs statefulset/private-ingress --since=10
 
 The Ingress `ADDRESS` should become
 `<hostname>.narwhal-snapper.ts.net`. If the service has zero hosts in the
-Tailscale admin panel, approve `private-ingress-0` for that service. The
-service then shows one host with `approved:manual` and `ready`.
+Tailscale admin panel, approve `private-ingress-0` for that service. The service
+then shows one host with `approved:manual` and `ready`.
 
-Test it from a tailnet client:
+Test the route from a tailnet client:
 
 ```sh
 curl --fail --connect-timeout 10 --max-time 20 \
@@ -102,16 +112,18 @@ curl --fail --connect-timeout 10 --max-time 20 \
 Some apps return a redirect, an authentication response, or another non-200
 success response. What matters is that the connection reaches the app.
 
-## If a name is genuinely blocked
+## Replace a stale service name
 
-Most new services do not need cleanup. Do not delete a service just because
-the name already exists. First inspect it. A service with a
+Most new services do not need cleanup. Do not delete a service just because the
+name already exists. First inspect it. A service with a
 `tailscale.com/owner-references` annotation already belongs to a Kubernetes
 operator. Reconcile the Ingress and let that operator keep it.
 
 Only delete a service when it is a stale, non-operator resource that blocks a
-planned replacement. This uses the OAuth client already stored for the
-Tailscale operator. It does not print the client secret or access token.
+planned replacement. The following commands use the OAuth client already stored
+for the Tailscale operator. They do not print the client secret or access token.
+
+### Inspect the existing service
 
 ```sh
 set -euo pipefail
@@ -131,9 +143,11 @@ curl --fail --silent --show-error \
   | jq "{name, annotations, ports, tags}"
 ```
 
-If that inspection shows an unowned stale service, run this in its own shell.
-It repeats the token setup so the delete request cannot accidentally run with
-an expired or missing token. Reconcile Flux afterwards.
+### Delete an unowned stale service
+
+If the inspection shows an unowned stale service, run this in its own shell. It
+repeats the token setup so the delete request cannot accidentally run with an
+expired or missing token. Reconcile Flux afterwards.
 
 ```sh
 set -euo pipefail
