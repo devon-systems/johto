@@ -158,6 +158,14 @@ _: {
       };
     };
 
+    systemd.services = lib.mapAttrs' (name: _:
+      lib.nameValuePair "restic-backups-${name}" {
+        unitConfig.RequiresMountsFor = ["/mnt/Data"];
+        serviceConfig.ExecStartPre = lib.mkBefore ["${pkgs.util-linux}/bin/mountpoint -q /mnt/Data"];
+      }) (lib.filterAttrs (_: backup:
+      backup.paths != null && lib.any (path: path == "/mnt/Data" || lib.hasPrefix "/mnt/Data/" path) backup.paths)
+    config.services.restic.backups);
+
     services.snapper = {
       configs = {
         home = {
