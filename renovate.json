@@ -30,11 +30,11 @@
 
   "customManagers": [
     {
-      "description": "Pinned images in local Helm chart templates",
+      "description": "CloudNativePG Cluster imageName pins",
       "customType": "regex",
-      "managerFilePatterns": ["/^k8s/charts/.+/templates/.+\\.ya?ml$/"],
+      "managerFilePatterns": ["/^k8s/.+\\.ya?ml$/"],
       "matchStrings": [
-        "\\s*image:\\s+[\"']?(?<depName>[^\\s\"'{}]+?):(?<currentValue>[^\\s\"'@{}]+)@(?<currentDigest>sha256:[a-f0-9]{64})[\"']?"
+        "imageName:\\s+[\"']?(?<depName>[^\\s\"'@:]+(?::\\d+)?/[^\\s\"'@:]+):(?<currentValue>[^\\s\"'@]+)@(?<currentDigest>sha256:[a-f0-9]{64})"
       ],
       "datasourceTemplate": "docker"
     }
