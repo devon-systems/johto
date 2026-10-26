@@ -71,6 +71,7 @@ _: {
       sopsFile = self + "/secrets/wireguard-johto.yaml";
       key = hostName;
       mode = "0400";
+      restartUnits = ["wireguard-johto.service"];
     };
 
     networking = {
