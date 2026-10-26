@@ -93,4 +93,4 @@ After changing `keys/`, run `just sops-rekey`. Commit `.sops.yaml` and all
 re-encrypted files together. Never commit decrypted secrets, private keys,
 OpenTofu state, or saved plans.
 
-This project is available under the [MIT License](LICENSE.md).
+Licensed under the [MIT License](LICENSE.md).

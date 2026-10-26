@@ -5,11 +5,11 @@ Each Ingress creates one Tailscale Service at
 `<hostname>.narwhal-snapper.ts.net`. The proxy runs on Goldenrod and forwards
 to the Kubernetes Service.
 
-These routes are available only on the tailnet. They are unrelated to Olivine's
-public ingress.
+These routes are available only on the tailnet. Olivine handles public ingress
+separately.
 
-Examples live in `k8s/private-ingress/`. Start with the one whose
-namespace and service port look most like the app you are adding.
+Choose an example from `k8s/private-ingress/` with a similar namespace and
+service port.
 
 ## Add a service
 
@@ -42,7 +42,7 @@ spec:
                   name: <port-name>
 ```
 
-`<hostname>` is only the first DNS label. For example, `navidrome` becomes
+Use the first DNS label for `<hostname>`. For example, `navidrome` becomes
 `navidrome.narwhal-snapper.ts.net`. Pick a name that is not already used by a
 service or a MagicDNS device.
 
@@ -65,8 +65,8 @@ Tailscale discovers its public endpoints without a configured home WAN address.
 
 ### Validate and deploy
 
-If you changed a backend policy, stage that file with `git add` before
-committing. Then check the Kubernetes resources and commit the route:
+If you changed a backend policy, stage that file with `git add`. Then check the
+Kubernetes resources and commit the route:
 
 ```sh
 nix run .#check-k8s
@@ -75,9 +75,8 @@ git commit -m "feat(private-ingress): expose <app> through Tailscale"
 git push
 ```
 
-Flux normally catches the commit within ten minutes. For an immediate deploy,
-use the Johto context explicitly. The default local context may be another
-cluster.
+Flux normally reconciles the commit within ten minutes. For an immediate
+deployment, use the Johto context. The default context may point to another cluster.
 
 ```sh
 nix run nixpkgs#fluxcd -- --context johto reconcile source git flux-system -n flux-system
@@ -109,15 +108,14 @@ curl --fail --connect-timeout 10 --max-time 20 \
   https://<hostname>.narwhal-snapper.ts.net/
 ```
 
-Some apps return a redirect, an authentication response, or another non-200
-success response. What matters is that the connection reaches the app.
+A redirect or authentication response can confirm that the request reached the
+app.
 
 ## Replace a stale service name
 
-Most new services do not need cleanup. Do not delete a service just because the
-name already exists. First inspect it. A service with a
+Inspect an existing service before you delete it. A service with a
 `tailscale.com/owner-references` annotation already belongs to a Kubernetes
-operator. Reconcile the Ingress and let that operator keep it.
+operator. Reconcile that service's Ingress instead of deleting the service.
 
 Only delete a service when it is a stale, non-operator resource that blocks a
 planned replacement. The following commands use the OAuth client already stored
@@ -145,9 +143,9 @@ curl --fail --silent --show-error \
 
 ### Delete an unowned stale service
 
-If the inspection shows an unowned stale service, run this in its own shell. It
-repeats the token setup so the delete request cannot accidentally run with an
-expired or missing token. Reconcile Flux afterwards.
+If the inspection shows an unowned stale service, run the following commands in
+a separate shell. They request a fresh token before deleting the service.
+Then reconcile Flux.
 
 ```sh
 set -euo pipefail

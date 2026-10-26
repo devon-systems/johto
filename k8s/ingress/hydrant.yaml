@@ -21,7 +21,7 @@ spec:
   rules:
     - host: hydrant.cute.haus
       http:
-        # The management API is intentionally absent from the public ingress.
+        # Keep the management API off the public ingress.
         paths:
           - path: /health
             pathType: Exact

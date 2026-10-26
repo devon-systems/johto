@@ -7,7 +7,6 @@ spec:
   dependsOn:
     - name: postgres-backups
     - name: secrets
-  # Controls incoming database, instance-manager, and monitoring traffic.
   interval: 10m
   retryInterval: 1m
   path: ./k8s/postgres

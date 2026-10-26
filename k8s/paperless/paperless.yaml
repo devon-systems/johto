@@ -172,9 +172,6 @@ spec:
           image: ghcr.io/paperless-ngx/paperless-ngx:latest@sha256:9bc6e8248891bcfa6f52fffe8b81e4ea8cae75790c3ec1b9906961a7ba55c969
           envFrom: [{ secretRef: { name: paperless-env } }]
           env:
-            # The Service is intentionally named `paperless`; explicitly set
-            # the application port so Kubernetes' legacy service variables
-            # cannot override it.
             - { name: PAPERLESS_PORT, value: "8000" }
             - { name: GRANIAN_WORKERS, value: "2" }
             - { name: PAPERLESS_ACCOUNT_DEFAULT_GROUP, value: users }

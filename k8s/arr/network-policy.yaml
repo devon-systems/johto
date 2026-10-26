@@ -1,4 +1,4 @@
-# qBittorrent deliberately keeps host networking and is excluded from these policies.
+# These policies exclude qBittorrent, which uses host networking.
 # Olivine scrapes exporters from its WireGuard or Flannel host address.
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
