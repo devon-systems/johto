@@ -19,7 +19,7 @@ keys:
   - &host_goldenrod age157en2pt286a22pxzyugt84ak6rn2at89tpma88juqfgj84lme5csq4999g
   - &host_lilycove age1l5t62uzsj05pzftv9wg6s346csxyq202vxmmyyx8gwy8zu2nrfrs7v2a4z
   - &host_olivine age14pn3ukj9n38lx7fxc07qgdx34jedwrx8vhve5x06tyanff7hlgws3xgpvn
-  - &flux_k8s age1yq47x0cyf95jg372v84ttptgnppsrfmxshsua6p58ecmgzxc5c0s5stfth
+  - &flux_k8s age1c2mcf7ld5hgl746angx867v75yumgh7mfc7676llffyadeu2e4lshf0k9z
 
 creation_rules:
   - path_regex: ^secrets/.*\.ya?ml$
