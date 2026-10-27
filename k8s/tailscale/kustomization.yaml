@@ -3,3 +3,16 @@ kind: Kustomization
 resources:
   - network-policy.yaml
   - operator.yaml
+replacements:
+  - source:
+      kind: HelmRelease
+      name: tailscale-operator
+      fieldPath: spec.chart.spec.version
+    targets:
+      - select:
+          kind: HelmRepository
+          name: tailscale
+        fieldPaths:
+          - metadata.annotations.[reconcile.fluxcd.io/requestedAt]
+        options:
+          create: true
