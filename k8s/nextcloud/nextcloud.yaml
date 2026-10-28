@@ -193,7 +193,7 @@ spec:
             capabilities:
               drop:
                 - NET_RAW
-          image: docker.io/library/nextcloud:35-apache@sha256:0347adaf2fa460aa9589f8c2b1ed246788d11a72ad9918d55ca288f3137fe5ca
+          image: docker.io/library/nextcloud:35-apache@sha256:eee9c9f52a0d623082e8507186ea0c1ca1cf1e4a9075b99865c7f938110cb5d2
           envFrom:
             - secretRef:
                 name: nextcloud-env
@@ -266,7 +266,7 @@ spec:
               subPath: apache.conf
               readOnly: true
         - name: cron
-          image: docker.io/library/nextcloud:35-apache@sha256:0347adaf2fa460aa9589f8c2b1ed246788d11a72ad9918d55ca288f3137fe5ca
+          image: docker.io/library/nextcloud:35-apache@sha256:eee9c9f52a0d623082e8507186ea0c1ca1cf1e4a9075b99865c7f938110cb5d2
           command: [/bin/sh, -ec]
           args:
             [
