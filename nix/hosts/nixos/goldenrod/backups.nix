@@ -104,7 +104,8 @@ _: {
         pruneOpts = coreRetention;
         extraBackupArgs = [
           "--cleanup-cache"
-          "--exclude=/var/lib/rancher/k3s/storage/*_cnpg-system_pg-shared-1/**"
+          # CloudNativePG volumes are backed up by Barman.
+          "--exclude=/var/lib/rancher/k3s/storage/*_cnpg-system_*"
         ];
         inhibitsSleep = false;
       };
@@ -148,12 +149,6 @@ _: {
       tautulli = appBackup {
         name = "tautulli";
         paths = ["/mnt/Data/apps/tautulli"];
-        pruneOpts = rebuildableRetention;
-      };
-
-      uptime-kuma = appBackup {
-        name = "uptime-kuma";
-        paths = ["/mnt/Data/apps/uptime-kuma"];
         pruneOpts = rebuildableRetention;
       };
     };
