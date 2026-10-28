@@ -1,6 +1,7 @@
 _: {
   flake.nixosModules.goldenrod = {
     config,
+    lib,
     pkgs,
     self,
     ...
@@ -96,6 +97,8 @@ _: {
       after = ["mnt-Data.mount"];
       requires = ["mnt-Data.mount"];
       serviceConfig = {
+        # Garage reads GARAGE_DEFAULT_* only with these flags.
+        ExecStart = lib.mkForce "${config.services.garage.package}/bin/garage server --single-node --default-bucket";
         DynamicUser = false;
         User = "garage";
         Group = "garage";
