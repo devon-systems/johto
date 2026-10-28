@@ -17,11 +17,6 @@ spec:
         env:
           - name: TS_EXPERIMENTAL_SERVICE_AUTO_ADVERTISEMENT
             value: "true"
-      tolerations:
-        - effect: NoSchedule
-          key: johto.narwhal-snapper-ts.net/workload
-          operator: Equal
-          value: ingress
 ---
 apiVersion: tailscale.com/v1alpha1
 kind: ProxyGroup
