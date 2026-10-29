@@ -33,7 +33,6 @@ k8s/                  Flux and application manifests
 secrets/              SOPS-encrypted host secrets
 keys/                 Public SOPS recipients
 terraform/            OpenTofu configuration for Cloudflare DNS
-scripts/              Maintenance tools
 docs/                 Service operations
 ```
 
@@ -56,6 +55,8 @@ Build each host affected by a Nix change:
 nix build .#nixosConfigurations.olivine.config.system.build.toplevel
 nix build .#nixosConfigurations.goldenrod.config.system.build.toplevel
 ```
+
+Shared validation and metrics helpers come from the pinned dvnpkgs input.
 
 After Kubernetes changes, run `just check-k8s`. For OpenTofu changes, run
 `tofu -chdir=terraform init` on a fresh checkout, then run:
