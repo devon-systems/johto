@@ -38,7 +38,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: meilisearch
-          image: getmeili/meilisearch:v1.13.3@sha256:bed3fb650e62da53145777204891159242f6ea4ce69e215b36223af4aa64a0ae
+          image: getmeili/meilisearch:v1.56.0@sha256:1f578fa865f8251894b3bf38d6668d6209a3f451f8f65ab953e129d4c1db5ef4
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
@@ -49,6 +49,9 @@ spec:
                 secretKeyRef:
                   name: linkwarden-env
                   key: MEILI_MASTER_KEY
+            # Version upgrades are reviewed and backed up before rollout.
+            - name: MEILI_UPGRADE_DB
+              value: "true"
             - name: MEILI_ENV
               value: production
             - name: MEILI_NO_ANALYTICS

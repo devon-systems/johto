@@ -27,3 +27,8 @@ Meilisearch version updates require manual review because the on-disk index
 format can change between minor releases. Plan and test the index migration
 before merging an update. Linkwarden exits if its search worker cannot connect
 to Meilisearch.
+
+`MEILI_UPGRADE_DB=true` permits the reviewed image to migrate its index at
+startup. Before each version upgrade, take a Meilisearch snapshot or a cold
+copy of the index. The pre-1.56.0 recovery copy is retained on Goldenrod at
+`/mnt/Data/apps/linkwarden/meilisearch-before-1.56.0` and covered by restic.
