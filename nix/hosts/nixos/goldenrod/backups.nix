@@ -110,6 +110,12 @@ _: {
         inhibitsSleep = false;
       };
 
+      linkwarden = appBackup {
+        name = "linkwarden";
+        paths = ["/mnt/Data/apps/linkwarden"];
+        pruneOpts = coreRetention;
+      };
+
       nextcloud = appBackup {
         name = "nextcloud";
         paths = ["/mnt/Data/apps/nextcloud/html"];
