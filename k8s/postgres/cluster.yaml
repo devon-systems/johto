@@ -51,6 +51,10 @@ spec:
         login: true
         passwordSecret:
           name: happyview-pg-creds
+      - name: linkwarden
+        login: true
+        passwordSecret:
+          name: linkwarden-pg-creds
   storage:
     size: 20Gi
   plugins:

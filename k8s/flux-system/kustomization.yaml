@@ -36,3 +36,4 @@ resources:
   - uptime-kuma.yaml
   - watsup.yaml
   - ombi.yaml
+  - linkwarden.yaml

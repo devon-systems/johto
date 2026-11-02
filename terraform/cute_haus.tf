@@ -1,14 +1,15 @@
 locals {
   cute_haus_johto_ingress = {
-    "appview.cute.haus"   = true
-    "collabora.cute.haus" = false
-    "cute.haus"           = true
-    "hydrant.cute.haus"   = true
-    "id.cute.haus"        = true
-    "immich.cute.haus"    = false
-    "kuma.cute.haus"      = true
-    "nextcloud.cute.haus" = false
-    "paperless.cute.haus" = false
+    "appview.cute.haus"    = true
+    "collabora.cute.haus"  = false
+    "cute.haus"            = true
+    "hydrant.cute.haus"    = true
+    "id.cute.haus"         = true
+    "immich.cute.haus"     = false
+    "linkwarden.cute.haus" = true
+    "kuma.cute.haus"       = true
+    "nextcloud.cute.haus"  = false
+    "paperless.cute.haus"  = false
   }
 }
 

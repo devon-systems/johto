@@ -11,3 +11,4 @@ resources:
   - pocket-id.yaml
   - happyview.yaml
   - hydrant.yaml
+  - linkwarden.yaml

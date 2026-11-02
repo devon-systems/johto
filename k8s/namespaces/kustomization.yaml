@@ -21,3 +21,4 @@ resources:
   - plex.yaml
   - tailscale.yaml
   - websites.yaml
+  - linkwarden.yaml

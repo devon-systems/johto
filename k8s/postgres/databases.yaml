@@ -162,3 +162,14 @@ spec:
     name: pg-shared
   name: sonarr_log
   owner: media
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: linkwarden
+  namespace: cnpg-system
+spec:
+  cluster:
+    name: pg-shared
+  name: linkwarden
+  owner: linkwarden
