@@ -22,3 +22,8 @@ check migration compatibility and restore the database if necessary.
 The database password appears in both `linkwarden-pg-creds.sops.yaml` and the
 `DATABASE_URL` in `linkwarden-env.sops.yaml`. Update both when rotating it.
 The OIDC client secret and Meilisearch key are also in `linkwarden-env.sops.yaml`.
+
+Meilisearch version updates require manual review because the on-disk index
+format can change between minor releases. Plan and test the index migration
+before merging an update. Linkwarden exits if its search worker cannot connect
+to Meilisearch.

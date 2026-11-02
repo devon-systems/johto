@@ -68,6 +68,12 @@
       "automerge": true
     },
     {
+      "description": "Meilisearch version upgrades require an index migration plan",
+      "matchPackageNames": ["getmeili/meilisearch"],
+      "matchUpdateTypes": ["major", "minor", "patch"],
+      "automerge": false
+    },
+    {
       "description": "Major bumps stay manual",
       "matchUpdateTypes": ["major"],
       "automerge": false
