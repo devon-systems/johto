@@ -228,11 +228,11 @@
         "uv2nix": "uv2nix_2"
       },
       "locked": {
-        "lastModified": 1793685986,
-        "narHash": "sha256-sCnKlpNTZT6nAGn8lKN3rWtLJ5N6LX/cPZxF4WGD6TY=",
+        "lastModified": 1793769406,
+        "narHash": "sha256-0I28tUl82NCOS3YTJXRJTCOmoZ2L/sOXL5whd6oxuP0=",
         "owner": "devon-systems",
         "repo": "dvnpkgs",
-        "rev": "651676d1de834f79ed38bf4ce89e298905309212",
+        "rev": "3589187f71fe4de1d0a492b2d1102f837b76e831",
         "type": "github"
       },
       "original": {
@@ -510,11 +510,11 @@
         "treefmt-nix": "treefmt-nix_2"
       },
       "locked": {
-        "lastModified": 1793669982,
-        "narHash": "sha256-yCY0C0Ta7jfK0uSssZ3uEOfER9aZuZV0gj9W7bJIK6U=",
+        "lastModified": 1793750192,
+        "narHash": "sha256-ueNHsKFN7SA7Lzk4DPnjWgpIET+IaJZ8uIIeDszen+Y=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "5ba207f9d264f531e473a4ea8b3187c9ced912f9",
+        "rev": "78f777ba4f6141fca604a5cee3f6ff8dfab09f48",
         "type": "github"
       },
       "original": {
