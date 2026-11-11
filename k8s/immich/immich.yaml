@@ -129,7 +129,7 @@ spec:
             capabilities:
               drop:
                 - NET_RAW
-          image: ghcr.io/immich-app/immich-machine-learning:v3.4.0-openvino@sha256:5a0c0c6bcc1102977a9685c16c8293bd07ab3e3df73bca66d2988e987c852708
+          image: ghcr.io/immich-app/immich-machine-learning:v3.4.1-openvino@sha256:7e4cf37c46c0dd48d240d5b972296b9baa94b48358f068156f219dbaf0d2a843
           env:
             - { name: MACHINE_LEARNING_CACHE_FOLDER, value: /cache }
             - {
@@ -199,7 +199,7 @@ spec:
             capabilities:
               drop:
                 - NET_RAW
-          image: ghcr.io/immich-app/immich-server:v3.4.0@sha256:7b7b575029168bfb9eb901d868ce7dbfda0d7818e78aaace29b7b8a08cd4e7d5
+          image: ghcr.io/immich-app/immich-server:v3.4.1@sha256:7c489add298fc2f92cda4c777de6462aa206877e04087b815f62c7664af0b53b
           env:
             - { name: DB_DATABASE_NAME, value: immich }
             - { name: DB_HOSTNAME, value: postgres }
