@@ -39,7 +39,7 @@ spec:
             capabilities:
               drop:
                 - NET_RAW
-          image: ghcr.io/tautulli/tautulli@sha256:a4323bc09b27e265e269d79421ed3eb795083ef988bb84788eba89e5738c8005
+          image: ghcr.io/tautulli/tautulli@sha256:e2f9410116ffd6667c32875ba2f3038aa0a6acb6c4f64403f535ae435eeaab2a
           env:
             - name: PGID
               value: "100"
