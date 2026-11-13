@@ -1,8 +1,10 @@
 # Linkwarden
 
 Linkwarden runs on Goldenrod at `https://linkwarden.cute.haus`. Pocket ID
-allows the `Family` group to sign in. Password login and public registration
-are disabled. The Pocket ID client uses the exact callback
+allows the `Family` group to sign in. Password login is enabled as a fallback;
+public registration is disabled. Users created through Pocket ID can sign in
+and create their first password at `/settings/password` without an old password.
+The Pocket ID client uses the exact callback
 `https://linkwarden.cute.haus/api/v1/auth/callback/oidc` and requires PKCE.
 
 Flux deploys the application and Meilisearch from `k8s/linkwarden`. The pinned

@@ -62,7 +62,7 @@ spec:
             - name: NEXT_PUBLIC_DISABLE_REGISTRATION
               value: "true"
             - name: NEXT_PUBLIC_CREDENTIALS_ENABLED
-              value: "false"
+              value: "true"
             - name: NEXT_PUBLIC_OIDC_ENABLED
               value: "true"
             - name: OIDC_CUSTOM_NAME
