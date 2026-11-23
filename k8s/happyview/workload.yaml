@@ -27,7 +27,7 @@ spec:
             capabilities:
               drop:
                 - NET_RAW
-          image: ghcr.io/gamesgamesgamesgamesgames/happyview:2.17.8@sha256:86d8b0795ba9a0e8da06e200e6c14489df24b40a309b69b63e69e55cc91b47f9
+          image: ghcr.io/gamesgamesgamesgamesgames/happyview:2.17.9@sha256:15bdac0fb6c89339f4634a32462eb6fa558db74e6dc18c876e8f0f17b9fff89e
           envFrom:
             - secretRef:
                 name: happyview-env
