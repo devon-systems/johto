@@ -6,7 +6,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     # Match the Hydrant revision pinned by Tangled core for Bobbin.
     hydrant = {
-      url = "git+https://tangled.org/ptr.pet/hydrant?ref=main&rev=0128352f6b73d26e7ffaa5a79446ef556e452617";
+      url = "git+https://tangled.org/ptr.pet/hydrant?ref=main&rev=f04c49e0ce35e6f375c1c1e2c79d6e9ee63b32c2";
       flake = false;
     };
     import-tree.url = "github:denful/import-tree";
