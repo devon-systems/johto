@@ -484,17 +484,17 @@
     "hydrant": {
       "flake": false,
       "locked": {
-        "lastModified": 1792544679,
-        "narHash": "sha256-fm0cuIyHjJTSvleJyLbT4E5KugtanuysL/oMOnGhN3I=",
+        "lastModified": 1795529984,
+        "narHash": "sha256-PVBj5TdoJZrzqN7hwsRQ28+zSpPImgyFHAw67VhvoGw=",
         "ref": "main",
-        "rev": "0128352f6b73d26e7ffaa5a79446ef556e452617",
-        "revCount": 811,
+        "rev": "f04c49e0ce35e6f375c1c1e2c79d6e9ee63b32c2",
+        "revCount": 927,
         "type": "git",
         "url": "https://tangled.org/ptr.pet/hydrant"
       },
       "original": {
         "ref": "main",
-        "rev": "0128352f6b73d26e7ffaa5a79446ef556e452617",
+        "rev": "f04c49e0ce35e6f375c1c1e2c79d6e9ee63b32c2",
         "type": "git",
         "url": "https://tangled.org/ptr.pet/hydrant"
       }
