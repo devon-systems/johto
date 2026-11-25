@@ -32,8 +32,6 @@ spec:
       terminationGracePeriodSeconds: 60
       nodeSelector:
         johto.narwhal-snapper-ts.net/workload: media
-      imagePullSecrets:
-        - name: hydrant-atcr-pull
       securityContext:
         runAsNonRoot: true
         runAsUser: 65532
@@ -43,7 +41,8 @@ spec:
           type: RuntimeDefault
       containers:
         - name: hydrant
-          image: atcr.io/ptr.pet/hydrant:latest@sha256:10546b960bbb35999e52332b1bcd7b0a0cf0caed79ed818fc418e3e4507dbc3c
+          image: localhost/johto/hydrant:0128352
+          imagePullPolicy: Never
           env:
             - name: HYDRANT_DATABASE_PATH
               value: /data/hydrant.db

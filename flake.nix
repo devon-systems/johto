@@ -4,6 +4,11 @@
   inputs = {
     dvnpkgs.url = "github:devon-systems/dvnpkgs";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    # Match the Hydrant revision pinned by Tangled core for Bobbin.
+    hydrant = {
+      url = "git+https://tangled.org/ptr.pet/hydrant?ref=main&rev=0128352f6b73d26e7ffaa5a79446ef556e452617";
+      flake = false;
+    };
     import-tree.url = "github:denful/import-tree";
     flake-parts.url = "github:hercules-ci/flake-parts";
 
